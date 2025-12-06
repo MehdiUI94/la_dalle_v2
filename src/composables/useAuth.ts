@@ -26,7 +26,7 @@ export function useAuth() {
 
       if (client && !clientError) {
         const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles
-        
+
         // Connexion réussie en tant que CLIENT
         userStore.setUser({
           id: client.id,
@@ -38,14 +38,14 @@ export function useAuth() {
           badges: [],
           createdAt: new Date(client.created_at),
         })
-        
+
         // Sauvegarder la session dans localStorage
         localStorage.setItem('la_dalle_user', JSON.stringify({
           id: client.id,
           role: 'client',
           email: client.email
         }))
-        
+
         router.push('/deals')
         return true
       }
@@ -60,7 +60,7 @@ export function useAuth() {
 
       if (restaurant && !restaurantError) {
         const profile = Array.isArray(restaurant.profiles) ? restaurant.profiles[0] : restaurant.profiles
-        
+
         // Connexion réussie en tant que RESTAURANT
         userStore.setUser({
           id: restaurant.id,
@@ -72,14 +72,14 @@ export function useAuth() {
           badges: [],
           createdAt: new Date(restaurant.created_at),
         })
-        
+
         // Sauvegarder la session dans localStorage
         localStorage.setItem('la_dalle_user', JSON.stringify({
           id: restaurant.id,
           role: 'restaurant',
           email: restaurant.email
         }))
-        
+
         router.push('/dashboard/restaurant')
         return true
       }
@@ -97,7 +97,12 @@ export function useAuth() {
   }
 
   // Inscription : créer directement dans les tables clients/restaurants
-  const signup = async (email: string, password: string, role: Role) => {
+  const signup = async (
+    email: string,
+    password: string,
+    role: Role,
+    additionalData?: any
+  ) => {
     try {
       isLoading.value = true
       errorMessage.value = null
@@ -123,24 +128,42 @@ export function useAuth() {
       const newUserId = crypto.randomUUID()
 
       // Créer le profil
+      const displayName = role === 'client'
+        ? `${additionalData?.firstname || ''} ${additionalData?.lastname || ''}`.trim()
+        : additionalData?.name || 'Nouveau Restaurant'
+
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
           id: newUserId,
           role,
-          display_name: null,
+          display_name: displayName || null,
         })
 
       if (profileError) throw profileError
 
       // Créer dans la table appropriée selon le rôle
       if (role === 'client') {
+        // Vérifier que le N° INE est fourni (obligatoire pour les étudiants)
+        if (!additionalData?.ine) {
+          throw new Error('Le N° INE est obligatoire pour s\'inscrire en tant qu\'étudiant')
+        }
+
         const { error: clientError } = await supabase
           .from('clients')
           .insert({
             id: newUserId,
             email,
             password, // En production, il faudrait hasher le mot de passe
+            firstname: additionalData?.firstname || null,
+            lastname: additionalData?.lastname || null,
+            age: additionalData?.age || null,
+            address: additionalData?.address || null,
+            phone: additionalData?.phone || null,
+            ine: additionalData?.ine || null,
+            is_student: true, // Tous les clients sont des étudiants
+            notifications_email: additionalData?.notifications?.email || false,
+            notifications_phone: additionalData?.notifications?.phone || false,
           })
 
         if (clientError) throw clientError
@@ -149,9 +172,20 @@ export function useAuth() {
           .from('restaurants')
           .insert({
             id: newUserId,
-            name: 'Nouveau Restaurant',
+            name: additionalData?.name || 'Nouveau Restaurant',
             email,
             password, // En production, il faudrait hasher le mot de passe
+            owner_firstname: additionalData?.ownerFirstname || null,
+            owner_lastname: additionalData?.ownerLastname || null,
+            address: additionalData?.address || null,
+            description: additionalData?.description || null,
+            logo: additionalData?.logo || null,
+            siren: additionalData?.siren || null,
+            siret: additionalData?.siret || null,
+            social_media: additionalData?.socialMedia || null,
+            phone: additionalData?.phone || null,
+            notifications_email: additionalData?.notifications?.email || false,
+            notifications_phone: additionalData?.notifications?.phone || false,
           })
 
         if (restoError) throw restoError
@@ -164,6 +198,70 @@ export function useAuth() {
       return false
     } finally {
       isLoading.value = false
+    }
+  }
+
+  // Charger le profil utilisateur depuis les tables clients/restaurants
+  const loadUserProfile = async (userId: string, userRole: Role) => {
+    if (userRole === 'client') {
+      const { data: client, error } = await supabase
+        .from('clients')
+        .select('*, profiles(role, display_name)')
+        .eq('id', userId)
+        .single()
+
+      if (error) throw error
+      if (!client) throw new Error('Profil client non trouvé')
+
+      const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles
+
+      userStore.setUser({
+        id: client.id,
+        username: profile?.display_name || 'Client',
+        email: client.email || '',
+        role: 'client',
+        points: 0,
+        level: 1,
+        badges: [],
+        createdAt: new Date(client.created_at),
+      })
+    } else {
+      const { data: restaurant, error } = await supabase
+        .from('restaurants')
+        .select('*, profiles(role, display_name)')
+        .eq('id', userId)
+        .single()
+
+      if (error) throw error
+      if (!restaurant) throw new Error('Profil restaurant non trouvé')
+
+      const profile = Array.isArray(restaurant.profiles) ? restaurant.profiles[0] : restaurant.profiles
+
+      userStore.setUser({
+        id: restaurant.id,
+        username: profile?.display_name || restaurant.name,
+        email: restaurant.email || '',
+        role: 'restaurant',
+        points: 0,
+        level: 1,
+        badges: [],
+        createdAt: new Date(restaurant.created_at),
+      })
+    }
+  }
+
+  // Vérifier la session au chargement (depuis localStorage)
+  const checkSession = async () => {
+    const savedUser = localStorage.getItem('la_dalle_user')
+
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser)
+        await loadUserProfile(userData.id, userData.role)
+      } catch (error) {
+        console.error('Erreur lors du chargement de la session:', error)
+        localStorage.removeItem('la_dalle_user')
+      }
     }
   }
 
@@ -219,70 +317,6 @@ export function useAuth() {
     return userStore.user?.role || null
   }
 
-  // Charger le profil utilisateur depuis les tables clients/restaurants
-  const loadUserProfile = async (userId: string, userRole: Role) => {
-    if (userRole === 'client') {
-      const { data: client, error } = await supabase
-        .from('clients')
-        .select('*, profiles(role, display_name)')
-        .eq('id', userId)
-        .single()
-
-      if (error) throw error
-      if (!client) throw new Error('Profil client non trouvé')
-
-      const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles
-
-      userStore.setUser({
-        id: client.id,
-        username: profile?.display_name || 'Client',
-        email: client.email || '',
-        role: 'client',
-        points: 0,
-        level: 1,
-        badges: [],
-        createdAt: new Date(client.created_at),
-      })
-    } else {
-      const { data: restaurant, error } = await supabase
-        .from('restaurants')
-        .select('*, profiles(role, display_name)')
-        .eq('id', userId)
-        .single()
-
-      if (error) throw error
-      if (!restaurant) throw new Error('Profil restaurant non trouvé')
-
-      const profile = Array.isArray(restaurant.profiles) ? restaurant.profiles[0] : restaurant.profiles
-
-      userStore.setUser({
-        id: restaurant.id,
-        username: profile?.display_name || restaurant.name,
-        email: restaurant.email || '',
-        role: 'restaurant',
-        points: 0,
-        level: 1,
-        badges: [],
-        createdAt: new Date(restaurant.created_at),
-      })
-    }
-  }
-
-  // Vérifier la session au chargement (depuis localStorage)
-  const checkSession = async () => {
-    const savedUser = localStorage.getItem('la_dalle_user')
-    
-    if (savedUser) {
-      try {
-        const userData = JSON.parse(savedUser)
-        await loadUserProfile(userData.id, userData.role)
-      } catch (error) {
-        console.error('Erreur lors du chargement de la session:', error)
-        localStorage.removeItem('la_dalle_user')
-      }
-    }
-  }
-
   return {
     user: userStore.user,
     isLoading,
@@ -297,3 +331,4 @@ export function useAuth() {
     checkSession,
   }
 }
+

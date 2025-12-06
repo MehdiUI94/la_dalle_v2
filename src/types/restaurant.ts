@@ -1,19 +1,17 @@
-import type { Deal } from './deal'
-
 export interface Restaurant {
-  id: number
+  id: string
   name: string
-  description: string
-  address: string
-  arrondissement: string
-  coordinates: {
-    lat: number
-    lng: number
-  }
-  phone?: string
-  website?: string
-  deals: Deal[]
-  rating?: number
-  imageUrl?: string
+  email: string
+  lat: number | null
+  lng: number | null
+  address: string | null
+  phone: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface RestaurantProfile extends Restaurant {
+  role: 'restaurant'
+  display_name: string | null
 }
 

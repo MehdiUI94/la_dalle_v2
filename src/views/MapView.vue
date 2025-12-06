@@ -1,9 +1,6 @@
 <template>
-  <div class="container mx-auto px-4 py-6 pb-24">
-    <h2 class="text-2xl font-display font-bold text-gray-900 mb-4">
-      Carte des deals 📍
-    </h2>
-
+  <div class="map-view">
+    <h2 class="page-title">Carte des Restaurants</h2>
     <RestaurantMap />
   </div>
 </template>
@@ -11,4 +8,25 @@
 <script setup lang="ts">
 import RestaurantMap from '@/components/map/RestaurantMap.vue'
 </script>
+
+<style scoped>
+.map-view {
+  padding: 2rem 40px;
+  min-height: calc(100vh - 140px);
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .map-view {
+    padding: 2rem 1rem;
+  }
+}
+</style>
 

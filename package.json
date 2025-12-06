@@ -6,11 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:check": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "create-test-data": "node scripts/create-test-data.js",
-    "insert-test-data": "node scripts/insert-test-data-api.js",
-    "show-sql": "node scripts/show-sql.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",

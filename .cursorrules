@@ -1,0 +1,108 @@
+# Cursor Rules - LA DALLE
+
+Ce fichier référence la structure complète des règles dans le dossier `cursor_rules/`.
+
+## 📚 Documentation complète
+
+Consulter le dossier `cursor_rules/` pour toutes les règles détaillées :
+- `cursor_rules/design/` : Système de design (typographie, couleurs, icônes, spacing, composants)
+- `cursor_rules/stack-technique/` : Documentation technique (Supabase, Leaflet)
+- `cursor_rules/accessibilite/` : RGAA, WCAG, bonnes pratiques d'accessibilité
+- `cursor_rules/conventions/` : Conventions (nommage, code, Git)
+- `cursor_rules/architecture/` : Architecture (composables, stores, router)
+
+## 🎯 Stack technique principale
+
+- **Vue 3** avec Composition API (`<script setup lang="ts">`)
+- **TypeScript** strict
+- **Vite** pour le build
+- **Tailwind CSS** pour le styling
+- **Supabase** pour la base de données et authentification
+- **Pinia** pour la gestion d'état
+- **Vue Router** pour la navigation
+- **Leaflet** pour les cartes interactives
+
+## 🎨 Design System
+
+- **Mobile-first** : Design responsive mobile-first
+- **Gen Z** : Animations, micro-interactions, design moderne
+- **Growth Hacking** : Gamification, partage social, engagement utilisateur
+- **Couleurs** : Primary #667eea, Accent #764ba2
+- **Polices** : Inter (sans-serif), Poppins (display)
+- **Icônes** : Lucide Vue Next
+
+## 📝 Conventions de code
+
+### Nommage
+- Composants Vue : PascalCase (`Header.vue`)
+- Composables : camelCase avec `use` (`useAuth.ts`)
+- Variables : camelCase (`userName`)
+- Constantes : UPPER_SNAKE_CASE (`MAX_DEALS`)
+
+### Vue 3
+- Composition API uniquement
+- `<script setup lang="ts">` pour tous les composants
+- Props et emits typés avec TypeScript
+
+### TypeScript
+- Mode strict activé
+- Types explicites pour les fonctions publiques
+- Éviter `any`, utiliser `unknown` si nécessaire
+
+## ♿ Accessibilité
+
+- **RGAA 4.1 niveau AA minimum**
+- Toutes les images doivent avoir un `alt`
+- Tous les formulaires doivent avoir des `<label>`
+- Contraste minimum 4.5:1 pour le texte
+- Navigation au clavier fonctionnelle
+- Focus visible sur tous les éléments interactifs
+- Structure HTML5 sémantique
+- Voir `cursor_rules/accessibilite/` pour plus de détails
+
+## 🗄️ Supabase
+
+- Tables principales : `profiles`, `clients`, `restaurants`, `deals`, `favorites`
+- RLS activé sur toutes les tables
+- Authentification via tables `clients` et `restaurants` (pas `auth.users`)
+- Realtime activé sur `restaurants` et `deals`
+- Toujours gérer les erreurs
+- Voir `cursor_rules/stack-technique/supabase/` pour plus de détails
+
+## 🗺️ Leaflet
+
+- OpenStreetMap pour les tiles (gratuit)
+- Marqueurs personnalisés avec icônes
+- Popups avec HTML personnalisé
+- Nettoyer les marqueurs dans `onUnmounted`
+- Voir `cursor_rules/stack-technique/leaflet/` pour plus de détails
+
+## 📁 Structure du projet
+
+```
+src/
+├── components/      # Composants réutilisables
+│   ├── layout/     # Header, Footer, Navigation
+│   ├── map/        # Composants de carte
+│   └── shared/     # Composants partagés
+├── views/          # Pages/Vues
+├── composables/    # Logique réutilisable
+├── stores/         # Stores Pinia
+├── router/         # Configuration du router
+├── types/          # Types TypeScript
+└── lib/            # Bibliothèques (Supabase client)
+```
+
+## 🚀 Bonnes pratiques générales
+
+1. **Séparation des responsabilités** : Un composable = une responsabilité
+2. **Réutilisabilité** : Créer des composants réutilisables
+3. **Accessibilité** : Toujours penser RGAA/WCAG
+4. **Performance** : Lazy loading, optimisations
+5. **Sécurité** : Validation côté client ET serveur
+6. **Tests** : Tester avec lecteur d'écran et navigation clavier
+
+## 📖 Pour plus de détails
+
+Consulter les fichiers dans `cursor_rules/` pour des règles spécifiques à chaque domaine.
+
