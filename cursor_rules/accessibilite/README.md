@@ -26,3 +26,5 @@ Ce dossier contient toute la documentation sur l'accessibilité pour le projet L
 - [WCAG 2.1](https://www.w3.org/WAI/WCAG21/quickref/)
 - [MDN Accessibility](https://developer.mozilla.org/fr/docs/Web/Accessibility)
 
+
+

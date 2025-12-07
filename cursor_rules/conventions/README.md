@@ -14,3 +14,5 @@ Ce dossier contient toutes les conventions de code, nommage et Git pour le proje
 - Lisibilité avant tout
 - Respect des conventions de la communauté Vue/TypeScript
 
+
+

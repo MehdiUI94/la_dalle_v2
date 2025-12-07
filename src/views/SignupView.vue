@@ -1,9 +1,5 @@
 <template>
   <div class="signup-view">
-    <router-link to="/" class="home-link">
-      <span class="home-icon">←</span>
-      Retour à l'accueil
-    </router-link>
     <div class="signup-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="signup-card">
@@ -13,10 +9,10 @@
         <div class="tabs-container">
           <div class="tabs">
             <button
-              @click="selectedRole = 'client'"
-              :class="['tab', { active: selectedRole === 'client' }]"
+              @click="selectedRole = 'etudiant'"
+              :class="['tab', { active: selectedRole === 'etudiant' }]"
             >
-              👤 Client
+              👤 Étudiant
             </button>
             <button
               @click="selectedRole = 'restaurant'"
@@ -32,8 +28,8 @@
           <span class="asterisk">*</span> Les champs marqués d'une astérisque sont obligatoires
         </p>
 
-        <!-- Formulaire Client -->
-        <form v-if="selectedRole === 'client'" @submit.prevent="handleSignup" class="signup-form">
+        <!-- Formulaire Étudiant -->
+        <form v-if="selectedRole === 'etudiant'" @submit.prevent="handleSignup" class="signup-form">
           <div class="form-row">
             <div class="form-group">
               <label for="client-firstname">Prénom *</label>
@@ -350,7 +346,7 @@ import AddressAutocomplete from '@/components/shared/AddressAutocomplete.vue'
 const router = useRouter()
 const { signup, isLoading, errorMessage: apiErrorMessage } = useAuth()
 
-const selectedRole = ref<Role>('client')
+const selectedRole = ref<Role>('etudiant')
 const validationError = ref<string | null>(null)
 const clientAddressRef = ref<InstanceType<typeof AddressAutocomplete> | null>(null)
 const restaurantAddressRef = ref<InstanceType<typeof AddressAutocomplete> | null>(null)
@@ -395,7 +391,7 @@ const handleSignup = async () => {
   // Réinitialiser les messages d'erreur
   validationError.value = null
 
-  if (selectedRole.value === 'client') {
+  if (selectedRole.value === 'etudiant') {
     // Vérifier que l'adresse est valide (sélectionnée dans la liste)
     if (!clientAddressValid.value || !clientForm.address) {
       validationError.value = 'Veuillez sélectionner une adresse dans la liste proposée'
@@ -418,7 +414,7 @@ const handleSignup = async () => {
     const success = await signup(
       clientForm.email,
       clientForm.password,
-      'client',
+      'etudiant',
       {
         firstname: clientForm.firstname,
         lastname: clientForm.lastname,
@@ -478,56 +474,10 @@ const handleSignup = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  padding: 2rem 80px;
   padding-top: 4rem;
   color: white;
   position: relative;
-}
-
-.home-link {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.2s;
-  z-index: 10;
-  font-size: 0.9rem;
-}
-
-.home-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateX(-2px);
-}
-
-.home-icon {
-  font-size: 1.2rem;
-}
-
-@media (max-width: 640px) {
-  .home-link {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-  }
-  
-  .home-link span:not(.home-icon) {
-    display: none;
-  }
-  
-  .home-link .home-icon {
-    font-size: 1.5rem;
-  }
 }
 
 .signup-container {
@@ -588,6 +538,11 @@ const handleSignup = async () => {
 .tab:hover {
   color: white;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.tab:active {
+  opacity: 0.7;
+  transform: scale(0.98);
 }
 
 .tab.active {
@@ -718,13 +673,19 @@ const handleSignup = async () => {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
   margin-top: 0.5rem;
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+  opacity: 0.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .submit-button:disabled {
@@ -743,6 +704,12 @@ const handleSignup = async () => {
   color: white;
   font-weight: 600;
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .signup-view {
+    padding: 2rem 1rem;
+  }
 }
 
 @media (max-width: 640px) {

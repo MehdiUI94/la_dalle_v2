@@ -16,3 +16,5 @@
 - Maintenir la cohérence visuelle
 - Utiliser des icônes accessibles (avec aria-label si nécessaire)
 
+
+

@@ -15,3 +15,5 @@ SELECT * FROM pg_publication_tables WHERE pubname = 'supabase_realtime';
 -- 2. RLS (Row Level Security) configuré correctement
 -- 3. Les utilisateurs doivent avoir les permissions SELECT sur les tables
 
+
+

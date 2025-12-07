@@ -14,7 +14,7 @@
 
 <style scoped>
 .home-view {
-  padding: 2rem 1rem;
+  padding: 2rem 80px;
   /* Supprimer min-height pour éviter les problèmes de scroll inutile */
 }
 
@@ -55,12 +55,25 @@
   border-radius: 50px;
   font-weight: 600;
   font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
+  cursor: pointer;
 }
 
 .cta-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button:active {
+  transform: translateY(0);
+  opacity: 0.8;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .home-view {
+    padding: 2rem 1rem;
+  }
 }
 </style>
 

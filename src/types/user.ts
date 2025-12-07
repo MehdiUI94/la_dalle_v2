@@ -2,7 +2,7 @@ export interface User {
   id: string
   username: string
   email: string
-  role: 'client' | 'restaurant'
+  role: 'etudiant' | 'restaurant'
   points: number
   level: number
   badges: Badge[]
@@ -22,4 +22,6 @@ export interface Level {
   pointsRequired: number
   name: string
 }
+
+
 

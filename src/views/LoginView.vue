@@ -1,9 +1,5 @@
 <template>
   <div class="login-view">
-    <router-link to="/" class="home-link">
-      <span class="home-icon">←</span>
-      Retour à l'accueil
-    </router-link>
     <div class="login-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="login-card">
@@ -13,10 +9,10 @@
         <div class="tabs-container">
           <div class="tabs">
             <button
-              @click="selectedRole = 'client'"
-              :class="['tab', { active: selectedRole === 'client' }]"
+              @click="selectedRole = 'etudiant'"
+              :class="['tab', { active: selectedRole === 'etudiant' }]"
             >
-              👤 Client
+              👤 Étudiant
             </button>
             <button
               @click="selectedRole = 'restaurant'"
@@ -67,10 +63,10 @@
 
         <!-- Boutons de test -->
         <div class="test-buttons">
-          <button @click="loginTestClient" class="test-button client">
-            Connexion Client Test
+          <button @click="handleTestClient" class="test-button etudiant">
+            Connexion Étudiant Test
           </button>
-          <button @click="loginTestRestaurant" class="test-button restaurant">
+          <button @click="handleTestRestaurant" class="test-button restaurant">
             Connexion Restaurant Test
           </button>
         </div>
@@ -93,15 +89,33 @@ import type { Role } from '@/types/profile'
 const router = useRouter()
 const { login, loginTestClient, loginTestRestaurant, isLoading, errorMessage } = useAuth()
 
-const selectedRole = ref<Role>('client')
+const selectedRole = ref<Role>('etudiant')
 const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
   const success = await login(email.value, password.value)
   if (success) {
-    // La redirection est gérée dans useAuth
+    // Rediriger selon le rôle de l'utilisateur
+    const userRole = localStorage.getItem('la_dalle_user') 
+      ? JSON.parse(localStorage.getItem('la_dalle_user')!).role 
+      : selectedRole.value
+    if (userRole === 'etudiant') {
+      router.push('/')
+    } else {
+      router.push('/dashboard/restaurant')
+    }
   }
+}
+
+const handleTestClient = async () => {
+  await loginTestClient()
+  router.push('/')
+}
+
+const handleTestRestaurant = async () => {
+  await loginTestRestaurant()
+  router.push('/dashboard/restaurant')
 }
 </script>
 
@@ -112,54 +126,9 @@ const handleLogin = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 80px;
   color: white;
   position: relative;
-}
-
-.home-link {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.2s;
-  font-size: 0.9rem;
-}
-
-.home-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateX(-2px);
-}
-
-.home-icon {
-  font-size: 1.2rem;
-}
-
-@media (max-width: 640px) {
-  .home-link {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-  }
-  
-  .home-link span:not(.home-icon) {
-    display: none;
-  }
-  
-  .home-link .home-icon {
-    font-size: 1.5rem;
-  }
 }
 
 .login-container {
@@ -219,6 +188,11 @@ const handleLogin = async () => {
 .tab:hover {
   color: white;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.tab:active {
+  opacity: 0.7;
+  transform: scale(0.98);
 }
 
 .tab.active {
@@ -282,13 +256,19 @@ const handleLogin = async () => {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
   margin-top: 0.5rem;
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+  opacity: 0.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .submit-button:disabled {
@@ -329,7 +309,7 @@ const handleLogin = async () => {
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }
 
 .test-button:hover {
@@ -337,7 +317,13 @@ const handleLogin = async () => {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.test-button.client {
+.test-button:active {
+  transform: translateY(0);
+  opacity: 0.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.test-button.etudiant {
   background: #667eea;
   color: white;
 }
@@ -358,5 +344,11 @@ const handleLogin = async () => {
   color: white;
   font-weight: 600;
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-view {
+    padding: 2rem 1rem;
+  }
 }
 </style>

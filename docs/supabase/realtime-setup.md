@@ -55,3 +55,5 @@ Une fois configuré, la carte devrait :
 - Vérifiez que les événements sont bien émis (console du navigateur)
 - Vérifiez que les coordonnées (lat/lng) sont bien renseignées
 
+
+

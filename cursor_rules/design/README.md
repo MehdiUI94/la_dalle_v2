@@ -17,3 +17,5 @@ Ce dossier contient toutes les règles de design et UI/UX pour le projet LA DALL
 - Growth Hacking : gamification, partage social, engagement
 - Accessibilité : respect du RGAA et WCAG 2.1 AA minimum
 
+
+

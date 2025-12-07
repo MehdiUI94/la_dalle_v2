@@ -1,4 +1,4 @@
-export type Role = 'client' | 'restaurant'
+export type Role = 'etudiant' | 'restaurant'
 
 export interface Profile {
   id: string
@@ -8,11 +8,13 @@ export interface Profile {
   updated_at: string
 }
 
-export interface ClientProfile extends Profile {
-  role: 'client'
+export interface EtudiantProfile extends Profile {
+  role: 'etudiant'
 }
 
 export interface RestaurantProfile extends Profile {
   role: 'restaurant'
 }
+
+
 

@@ -35,3 +35,5 @@ export function useFeature() {
 - `useDeals.ts` : Gestion des deals (si créé)
 - `useGeolocation.ts` : Géolocalisation (si créé)
 
+
+

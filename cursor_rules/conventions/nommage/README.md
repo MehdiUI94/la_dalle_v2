@@ -26,3 +26,5 @@
 - **Types** : PascalCase (`Role`, `DealCategory`)
 - **Génériques** : Lettre majuscule (`T`, `K`, `V`)
 
+
+

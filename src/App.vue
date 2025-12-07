@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header v-if="showHeader" />
+    <PageHeader v-if="showHeader" />
     <main class="main-content" :class="{ 'with-header': showHeader, 'with-footer': showBottomNav }">
       <CustomScrollbar>
         <div class="main-content-wrapper">
@@ -17,21 +17,38 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import Header from './components/layout/Header.vue'
+import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/stores/user'
+import { useLocationStore } from '@/stores/location'
+import PageHeader from './components/layout/PageHeader.vue'
 import BottomNav from './components/layout/BottomNav.vue'
 import CustomScrollbar from './components/shared/CustomScrollbar.vue'
 
 const route = useRoute()
+const { isAuthenticated } = useAuth()
+const userStore = useUserStore()
+const locationStore = useLocationStore()
 
 const showHeader = computed(() => {
-  return !route.meta.hideHeader
+  return isAuthenticated() && !route.meta.hideHeader
 })
 
 const showBottomNav = computed(() => {
   return !route.meta.hideBottomNav
 })
+
+// Charger les adresses quand l'utilisateur se connecte
+watch(
+  () => userStore.user,
+  async (newUser) => {
+    if (newUser?.role === 'etudiant' && newUser?.id) {
+      await locationStore.loadAddresses(newUser.id)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
@@ -46,15 +63,14 @@ const showBottomNav = computed(() => {
   flex: 1;
   overflow: hidden;
   position: relative;
-  /* Le main ne scroll pas directement */
 }
 
 .main-content.with-header {
-  padding-top: 70px; /* Hauteur du header */
+  padding-top: 0; /* Le header est sticky, pas besoin de padding */
 }
 
 .main-content.with-footer {
-  padding-bottom: 70px; /* Hauteur du footer */
+  /* Pas de padding-bottom pour éviter de cacher le contenu */
 }
 
 /* Wrapper pour le contenu */

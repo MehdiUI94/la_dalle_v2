@@ -32,3 +32,5 @@
 - Commentaires en anglais pour la documentation technique
 - JSDoc pour les fonctions publiques complexes
 
+
+

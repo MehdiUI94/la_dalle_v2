@@ -105,3 +105,5 @@ tests/
 3. **Mettre à jour régulièrement** les règles au fur et à mesure de l'évolution du projet
 4. **Partager avec l'équipe** pour maintenir la cohérence
 
+
+

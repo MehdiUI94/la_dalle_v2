@@ -31,6 +31,12 @@ Consulter le dossier `cursor_rules/` pour toutes les règles détaillées :
 - **Polices** : Inter (sans-serif), Poppins (display)
 - **Icônes** : Lucide Vue Next
 
+## 🎤 Tone of Voice
+
+- **Étudiant** : Slang français/francophone (accessible à tous les étudiants français, belges, suisses, luxembourgeois), direct, tutoiement. Vocabulaire : "Hess", "Banger", "Douiller", "Masterclass". Interpellation directe dans les notifications.
+- **Restaurant** : Ton neutre mais accueillant, clair et concis. Aidant à la compréhension.
+- Voir `cursor_rules/tone_of_voice/` pour plus de détails
+
 ## 📝 Conventions de code
 
 ### Nommage
@@ -39,10 +45,34 @@ Consulter le dossier `cursor_rules/` pour toutes les règles détaillées :
 - Variables : camelCase (`userName`)
 - Constantes : UPPER_SNAKE_CASE (`MAX_DEALS`)
 
+### Typographie
+- **OBLIGATOIRE** : Tous les textes affichés à l'utilisateur doivent commencer par une majuscule
+  - Labels de formulaires : "Email", "Mot de passe", "Adresse"
+  - Messages d'erreur : "Erreur lors de la connexion"
+  - Boutons : "Se connecter", "Retour à l'accueil"
+  - Titres et sous-titres : "Mon Profil", "Tous les Deals"
+  - Messages de succès : "Note enregistrée avec succès"
+  - Placeholders : "Votre@email.com", "Commencez à taper..."
+- **OBLIGATOIRE** : La taille de police des textes ne peut pas être inférieure à 14px (0.875rem)
+  - Tous les textes lisibles par l'utilisateur doivent respecter cette taille minimale
+  - Exception : les icônes et éléments décoratifs peuvent être plus petits
+
+### Spacing
+- **OBLIGATOIRE** : Le padding horizontal (gauche et droite) doit être minimum de 80px sur toutes les pages
+  - Utiliser `padding: 2rem 80px` ou `padding-left: 80px; padding-right: 80px`
+  - Sur mobile, réduire à `padding: 2rem 1rem` ou `padding-left: 1rem; padding-right: 1rem`
+
 ### Vue 3
 - Composition API uniquement
 - `<script setup lang="ts">` pour tous les composants
 - Props et emits typés avec TypeScript
+
+### États interactifs
+- **OBLIGATOIRE** : Tous les composants interactifs (boutons, liens cliquables, éléments de navigation) doivent avoir :
+  - Un état `:hover` pour le survol
+  - Un état `:active` pour le clic/pressé
+  - Transitions fluides (`transition: transform 0.2s, opacity 0.1s, etc.`)
+  - L'état `:active` doit généralement réduire l'opacité à 0.7-0.8 et annuler les transformations du hover
 
 ### TypeScript
 - Mode strict activé
@@ -62,9 +92,9 @@ Consulter le dossier `cursor_rules/` pour toutes les règles détaillées :
 
 ## 🗄️ Supabase
 
-- Tables principales : `profiles`, `clients`, `restaurants`, `deals`, `favorites`
+- Tables principales : `profiles`, `etudiants`, `restaurants`, `deals`, `favorites`
 - RLS activé sur toutes les tables
-- Authentification via tables `clients` et `restaurants` (pas `auth.users`)
+- Authentification via tables `etudiants` et `restaurants` (pas `auth.users`)
 - Realtime activé sur `restaurants` et `deals`
 - Toujours gérer les erreurs
 - Voir `cursor_rules/stack-technique/supabase/` pour plus de détails

@@ -15,3 +15,5 @@ export interface RestaurantProfile extends Restaurant {
   display_name: string | null
 }
 
+
+

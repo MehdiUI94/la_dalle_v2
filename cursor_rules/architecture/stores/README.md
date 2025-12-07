@@ -35,3 +35,5 @@ export const useFeatureStore = defineStore('feature', () => {
 - `user.ts` : État utilisateur, profil, points
 - `deals.ts` : Liste des deals, filtres (si créé)
 
+
+

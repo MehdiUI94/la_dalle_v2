@@ -20,8 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const wrapperRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const trackRef = ref<HTMLElement | null>(null)
@@ -120,6 +122,16 @@ const handleTrackClick = (e: MouseEvent) => {
   contentRef.value.scrollTop = Math.max(0, Math.min(newScrollTop, scrollHeight.value - clientHeight.value))
 }
 
+// Réinitialiser le scroll en haut lors du changement de route
+watch(() => route.path, () => {
+  nextTick(() => {
+    if (contentRef.value) {
+      contentRef.value.scrollTop = 0
+      updateScrollbar()
+    }
+  })
+})
+
 onMounted(() => {
   if (contentRef.value) {
     contentRef.value.addEventListener('scroll', handleScroll)
@@ -179,6 +191,8 @@ watch(() => [contentRef.value?.scrollHeight, contentRef.value?.clientHeight], ()
   box-sizing: border-box;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
+  /* Permettre au contenu de dépasser sans être coupé */
+  min-height: 100%;
 }
 
 .custom-scrollbar-content::-webkit-scrollbar {

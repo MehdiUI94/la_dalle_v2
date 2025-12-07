@@ -18,3 +18,5 @@ CREATE POLICY "Allow public delete images"
 ON storage.objects FOR DELETE
 USING (bucket_id = 'images');
 
+
+

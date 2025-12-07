@@ -28,3 +28,5 @@
 - Utiliser TypeScript types générés depuis Supabase
 - Vérifier les permissions RLS avant les requêtes
 
+
+

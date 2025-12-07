@@ -1,6 +1,6 @@
 <template>
   <div class="deals-view">
-    <h2 class="page-title">Tous les Deals</h2>
+    <h2 class="page-title">Mes restos</h2>
     <p class="page-subtitle">Découvrez les meilleures offres du moment</p>
     <div class="deals-container">
       <div class="deal-card">
@@ -13,13 +13,18 @@
 </template>
 
 <script setup lang="ts">
+import BackButton from '@/components/shared/BackButton.vue'
 </script>
 
 <style scoped>
 .deals-view {
-  padding: 2rem 1rem;
+  padding: 2rem 80px;
   min-height: calc(100vh - 140px);
   color: white;
+}
+
+.deals-view :deep(.back-button) {
+  margin-bottom: 1.5rem;
 }
 
 .page-title {
@@ -56,5 +61,13 @@
   margin-top: 0.5rem;
   opacity: 0.8;
 }
+
+@media (max-width: 768px) {
+  .deals-view {
+    padding: 2rem 1rem;
+  }
+}
 </style>
+
+
 

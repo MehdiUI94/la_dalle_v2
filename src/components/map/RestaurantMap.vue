@@ -11,39 +11,167 @@
     <div v-if="!isLoading && !error" class="map-info">
       <p class="restaurant-count">{{ restaurantCount }} restaurant{{ restaurantCount > 1 ? 's' : '' }} sur la carte</p>
     </div>
+    
+    <!-- Modal de notation -->
+    <RestaurantRatingModal
+      v-model:is-open="ratingModalOpen"
+      :restaurant-id="selectedRestaurantId"
+      :restaurant-name="selectedRestaurantName"
+      @rating-updated="handleRatingUpdated"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import L from 'leaflet'
 import { supabase } from '@/lib/supabaseClient'
+import { useLocationStore } from '@/stores/location'
+import { useGeolocation } from '@/composables/useGeolocation'
+import { useUserStore } from '@/stores/user'
+import { useFavorites } from '@/composables/useFavorites'
+import { useRestaurantRatings } from '@/composables/useRestaurantRatings'
+import RestaurantRatingModal from './RestaurantRatingModal.vue'
 import type { Database } from '@/types/database'
+import type { FilterOptions } from './FilterBar.vue'
 import 'leaflet/dist/leaflet.css'
+
+// Déclarer la fonction globale pour TypeScript
+declare global {
+  interface Window {
+    openRatingModal: (restaurantId: string, restaurantName: string) => void
+  }
+}
 
 type Restaurant = Database['public']['Tables']['restaurants']['Row']
 type Deal = Database['public']['Tables']['deals']['Row']
 
 interface RestaurantWithDeals extends Restaurant {
   deals?: Deal[]
+  distance?: number // Distance en km depuis la position du client
+  rating?: number // Note sur 5 (fictif pour l'instant)
+  foodType?: string | null // Type de nourriture (fictif pour l'instant)
+  diet?: string[] | null // Régimes alimentaires (fictif pour l'instant)
 }
+
+interface Props {
+  filters?: FilterOptions
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  filters: () => ({
+    minRating: null,
+    maxDistance: null,
+    hasPromos: false,
+    favoritesOnly: false,
+    foodType: null,
+    diet: null
+  })
+})
 
 const mapContainer = ref<HTMLElement | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const restaurantCount = ref(0)
 const isRealtimeConnected = ref(false)
+const ratingModalOpen = ref(false)
+const selectedRestaurantId = ref<string | null>(null)
+const selectedRestaurantName = ref('')
+
+const locationStore = useLocationStore()
+const userStore = useUserStore()
+const { calculateDistance, filterByRadius } = useGeolocation()
+const { loadFavorites, hasFavoriteDeals, getFavoriteDealIds } = useFavorites()
+const { getRestaurantsAverageRatings } = useRestaurantRatings()
 
 let map: L.Map | null = null
 let markers: Map<string, L.Marker> = new Map()
+let userMarker: L.Marker | null = null
 let realtimeChannel: ReturnType<typeof supabase.channel> | null = null
 
 // Centre par défaut : Paris
 const defaultCenter: [number, number] = [48.8566, 2.3522]
+const RADIUS_KM = 10 // Rayon de recherche en km
 
-// Récupérer les restaurants avec leurs deals actifs
+// Générer des données fictives pour les restaurants (pour foodType et diet uniquement)
+// Utilise l'ID du restaurant pour générer des données déterministes
+const generateMockData = (restaurant: Restaurant): Partial<RestaurantWithDeals> => {
+  // Utiliser l'ID comme seed pour générer des données déterministes
+  const seed = restaurant.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  
+  // Types de nourriture basés sur le seed
+  const foodTypes = ['pizza', 'burger', 'sushi', 'italien', 'asiatique', 'francais', 'mexicain', 'vegetarien', 'vegan']
+  const foodType = foodTypes[seed % foodTypes.length]
+  
+  // Régimes possibles basés sur le seed
+  const diets: string[] = []
+  if (seed % 3 === 0) diets.push('vegetarien')
+  if (seed % 4 === 0) diets.push('vegan')
+  if (seed % 5 === 0) diets.push('sans-gluten')
+  
+  return {
+    foodType,
+    diet: diets.length > 0 ? diets : null
+  }
+}
+
+// Appliquer les filtres aux restaurants
+const applyFilters = (restaurants: RestaurantWithDeals[]): RestaurantWithDeals[] => {
+  let filtered = [...restaurants]
+  const filters = props.filters
+
+  // Filtrer par note minimum
+  if (filters.minRating !== null) {
+    filtered = filtered.filter(r => (r.rating || 0) >= filters.minRating!)
+  }
+
+  // Filtrer par distance maximum
+  if (filters.maxDistance !== null && userStore.user?.role === 'etudiant') {
+    filtered = filtered.filter(r => {
+      if (r.distance === undefined) return false
+      return r.distance <= filters.maxDistance!
+    })
+  }
+
+  // Filtrer par restaurants avec promos
+  if (filters.hasPromos) {
+    filtered = filtered.filter(r => (r.deals || []).length > 0)
+  }
+
+  // Filtrer par favoris
+  if (filters.favoritesOnly && userStore.user?.role === 'etudiant') {
+    const favoriteDealIds = getFavoriteDealIds()
+    filtered = filtered.filter(r => {
+      const dealIds = (r.deals || []).map(d => d.id)
+      // Vérifier si au moins un deal du restaurant est en favori
+      return dealIds.some(dealId => favoriteDealIds.includes(dealId))
+    })
+  }
+
+  // Filtrer par type de nourriture
+  if (filters.foodType !== null) {
+    filtered = filtered.filter(r => r.foodType === filters.foodType)
+  }
+
+  // Filtrer par régime
+  if (filters.diet !== null) {
+    filtered = filtered.filter(r => {
+      if (!r.diet || r.diet.length === 0) return false
+      return r.diet.includes(filters.diet!)
+    })
+  }
+
+  return filtered
+}
+
+// Récupérer les restaurants avec leurs deals actifs et filtrer par distance
 const fetchRestaurants = async (): Promise<RestaurantWithDeals[]> => {
   try {
+    // Charger les favoris si l'utilisateur est un client
+    if (userStore.user?.role === 'etudiant' && userStore.user?.id) {
+      await loadFavorites(userStore.user.id)
+    }
+
     // Récupérer tous les restaurants avec coordonnées
     const { data: restaurants, error: restaurantsError } = await supabase
       .from('restaurants')
@@ -63,16 +191,89 @@ const fetchRestaurants = async (): Promise<RestaurantWithDeals[]> => {
 
     if (restaurantsError) throw restaurantsError
 
-    // Filtrer pour ne garder que les deals actifs
-    const restaurantsWithActiveDeals = (restaurants || []).map(restaurant => ({
-      ...restaurant,
-      deals: (restaurant.deals || []).filter((deal: Deal) => deal.is_active)
-    })) as RestaurantWithDeals[]
+    // Filtrer pour ne garder que les deals actifs et ajouter les données fictives
+    let restaurantsWithActiveDeals = (restaurants || []).map(restaurant => {
+      const deals = (restaurant.deals || []).filter((deal: Deal) => deal.is_active)
+      const mockData = generateMockData(restaurant)
+      return {
+        ...restaurant,
+        deals,
+        ...mockData
+      } as RestaurantWithDeals
+    })
+
+    // Récupérer les notes moyennes des restaurants (si disponibles)
+    try {
+      const restaurantIds = restaurantsWithActiveDeals.map(r => r.id)
+      if (restaurantIds.length > 0) {
+        const ratingsMap = await getRestaurantsAverageRatings(restaurantIds)
+        
+        // Ajouter les notes aux restaurants seulement si ratingsMap est valide et la note n'est pas null
+        if (ratingsMap && ratingsMap instanceof Map) {
+          restaurantsWithActiveDeals = restaurantsWithActiveDeals.map(restaurant => {
+            const rating = ratingsMap.get(restaurant.id)
+            return {
+              ...restaurant,
+              rating: rating !== null && rating !== undefined ? rating : undefined
+            }
+          })
+        }
+      }
+    } catch (err) {
+      console.warn('Impossible de récupérer les notes, continuation sans notes:', err)
+      // Continuer sans les notes en cas d'erreur
+    }
+
+    // Si l'utilisateur est un client, filtrer par distance
+    if (userStore.user?.role === 'etudiant') {
+      const currentCoords = locationStore.getCurrentCoordinates()
+      if (currentCoords) {
+        // Utiliser le filtre de distance si défini, sinon 10km par défaut
+        const maxDistance = props.filters.maxDistance || RADIUS_KM
+        
+        // Filtrer les restaurants dans le rayon défini
+        restaurantsWithActiveDeals = filterByRadius(
+          restaurantsWithActiveDeals,
+          currentCoords.lat,
+          currentCoords.lng,
+          maxDistance
+        ) as RestaurantWithDeals[]
+
+        // Calculer la distance pour chaque restaurant
+        restaurantsWithActiveDeals = restaurantsWithActiveDeals.map(restaurant => ({
+          ...restaurant,
+          distance: calculateDistance(
+            currentCoords.lat,
+            currentCoords.lng,
+            restaurant.lat!,
+            restaurant.lng!
+          )
+        }))
+      }
+    }
+
+    // Appliquer tous les filtres
+    restaurantsWithActiveDeals = applyFilters(restaurantsWithActiveDeals)
 
     return restaurantsWithActiveDeals
   } catch (err: any) {
     console.error('Erreur lors de la récupération des restaurants:', err)
     throw err
+  }
+}
+
+// Ouvrir la modal de notation
+const openRatingModal = (restaurantId: string, restaurantName: string) => {
+  selectedRestaurantId.value = restaurantId
+  selectedRestaurantName.value = restaurantName
+  ratingModalOpen.value = true
+}
+
+// Gérer la mise à jour de la note
+const handleRatingUpdated = async () => {
+  // Recharger les restaurants pour mettre à jour les notes
+  if (map) {
+    await initMap()
   }
 }
 
@@ -88,18 +289,35 @@ const createPopupContent = (restaurant: RestaurantWithDeals): string => {
       </div>`
     : '<p>Aucun deal actif pour le moment</p>'
 
+  const distanceHtml = restaurant.distance !== undefined
+    ? `<p><strong>📏</strong> ${restaurant.distance.toFixed(1)} km</p>`
+    : ''
+
+  // Afficher la note uniquement si elle existe (au moins une note enregistrée)
+  const ratingHtml = restaurant.rating !== undefined && restaurant.rating !== null
+    ? `<p><strong>⭐</strong> ${restaurant.rating.toFixed(1)}/5</p>`
+    : ''
+
+  // Bouton pour noter (uniquement pour les clients)
+  const rateButtonHtml = userStore.user?.role === 'etudiant'
+    ? `<button class="rate-button" onclick="window.openRatingModal('${restaurant.id}', '${restaurant.name.replace(/'/g, "\\'")}')">⭐ Noter ce restaurant</button>`
+    : ''
+
   return `
     <div class="popup-content">
       <h3>${restaurant.name}</h3>
       ${restaurant.address ? `<p><strong>📍</strong> ${restaurant.address}</p>` : ''}
+      ${distanceHtml}
+      ${ratingHtml}
       ${restaurant.phone ? `<p><strong>📞</strong> ${restaurant.phone}</p>` : ''}
       ${restaurant.description ? `<p>${restaurant.description}</p>` : ''}
       ${dealsHtml}
+      ${rateButtonHtml}
     </div>
   `
 }
 
-// Créer une icône personnalisée pour les marqueurs
+// Créer une icône personnalisée pour les marqueurs de restaurants
 const createCustomIcon = () => {
   return L.divIcon({
     className: 'custom-marker',
@@ -125,6 +343,32 @@ const createCustomIcon = () => {
   })
 }
 
+// Créer une icône personnalisée pour le marqueur de l'utilisateur
+const createUserIcon = () => {
+  return L.divIcon({
+    className: 'user-marker',
+    html: `
+      <div style="
+        background-color: #667eea;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      ">
+        👤
+      </div>
+    `,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+  })
+}
+
 // Ajouter un marqueur sur la carte
 const addMarker = (restaurant: RestaurantWithDeals) => {
   if (!map || !restaurant.lat || !restaurant.lng) return
@@ -133,9 +377,19 @@ const addMarker = (restaurant: RestaurantWithDeals) => {
     icon: createCustomIcon()
   })
 
-  marker.bindPopup(createPopupContent(restaurant), {
+  const popupContent = createPopupContent(restaurant)
+  
+  marker.bindPopup(popupContent, {
     maxWidth: 300,
     className: 'custom-popup'
+  })
+
+  // Ajouter un gestionnaire d'événements pour le popup après qu'il soit ajouté à la carte
+  marker.on('popupopen', () => {
+    // Exposer la fonction openRatingModal globalement pour qu'elle soit accessible depuis le HTML du popup
+    ;(window as any).openRatingModal = (restaurantId: string, restaurantName: string) => {
+      openRatingModal(restaurantId, restaurantName)
+    }
   })
 
   marker.addTo(map)
@@ -157,6 +411,27 @@ const updateMarker = (restaurant: RestaurantWithDeals) => {
   addMarker(restaurant)
 }
 
+// Ajouter le marqueur de l'utilisateur
+const addUserMarker = (lat: number, lng: number) => {
+  if (!map) return
+
+  // Supprimer l'ancien marqueur s'il existe
+  if (userMarker) {
+    map.removeLayer(userMarker)
+  }
+
+  userMarker = L.marker([lat, lng], {
+    icon: createUserIcon(),
+    zIndexOffset: 1000 // Au-dessus des autres marqueurs
+  })
+
+  userMarker.bindPopup('Votre position', {
+    className: 'user-popup'
+  })
+
+  userMarker.addTo(map)
+}
+
 // Initialiser la carte Leaflet
 const initMap = async () => {
   try {
@@ -167,8 +442,31 @@ const initMap = async () => {
       throw new Error('Conteneur de carte non trouvé')
     }
 
-    // Charger les restaurants
-    const restaurants = await fetchRestaurants()
+    // Obtenir la position du client (temporaire ou par défaut)
+    let centerLat = defaultCenter[0]
+    let centerLng = defaultCenter[1]
+    let zoom = 13
+
+    if (userStore.user?.role === 'etudiant') {
+      const currentCoords = locationStore.getCurrentCoordinates()
+      if (currentCoords) {
+        centerLat = currentCoords.lat
+        centerLng = currentCoords.lng
+        zoom = 14 // Zoom plus proche pour la position de l'utilisateur
+      }
+    }
+
+    // Charger les restaurants (filtrés par distance si client)
+    let restaurants: RestaurantWithDeals[] = []
+    try {
+      restaurants = await fetchRestaurants()
+    } catch (fetchError: any) {
+      console.error('Erreur lors du chargement des restaurants:', fetchError)
+      error.value = fetchError.message || 'Erreur lors du chargement des restaurants'
+      isLoading.value = false
+      return
+    }
+    
     restaurantCount.value = restaurants.length
 
     // Si la carte existe déjà, la détruire avant de la recréer
@@ -177,13 +475,12 @@ const initMap = async () => {
       map = null
     }
     markers.clear()
+    userMarker = null
 
-    // Créer la carte
+    // Créer la carte centrée sur la position du client
     map = L.map(mapContainer.value, {
-      center: restaurants.length > 0
-        ? [restaurants[0].lat!, restaurants[0].lng!]
-        : defaultCenter,
-      zoom: 13,
+      center: [centerLat, centerLng],
+      zoom: zoom,
       zoomControl: true,
       attributionControl: true
     })
@@ -194,7 +491,13 @@ const initMap = async () => {
       maxZoom: 19
     }).addTo(map)
 
-    // Ajouter les marqueurs
+    // Ajouter le marqueur de l'utilisateur si c'est un client
+    if (userStore.user?.role === 'etudiant' && locationStore.getCurrentCoordinates()) {
+      const coords = locationStore.getCurrentCoordinates()!
+      addUserMarker(coords.lat, coords.lng)
+    }
+
+    // Ajouter les marqueurs des restaurants
     const markerGroup = L.featureGroup()
     restaurants.forEach((restaurant) => {
       addMarker(restaurant)
@@ -204,13 +507,17 @@ const initMap = async () => {
       }
     })
 
-    // Ajuster la vue pour afficher tous les marqueurs
-    if (markers.size > 0) {
+    // Ajuster la vue pour afficher tous les marqueurs (utilisateur + restaurants)
+    if (userMarker) {
+      markerGroup.addLayer(userMarker)
+    }
+
+    if (markers.size > 0 || userMarker) {
       map.fitBounds(markerGroup.getBounds().pad(0.1), {
         maxZoom: 16
       })
     } else {
-      map.setView(defaultCenter, 13)
+      map.setView([centerLat, centerLng], zoom)
     }
 
     isLoading.value = false
@@ -220,6 +527,29 @@ const initMap = async () => {
     isLoading.value = false
   }
 }
+
+// Recharger la carte quand la localisation change
+watch(
+  () => [locationStore.temporaryLocation, locationStore.temporaryCoordinates, locationStore.defaultCoordinates],
+  async (newValues, oldValues) => {
+    // Éviter les rechargements inutiles
+    if (map && userStore.user?.role === 'etudiant' && JSON.stringify(newValues) !== JSON.stringify(oldValues)) {
+      await initMap()
+    }
+  },
+  { deep: true }
+)
+
+// Recharger la carte quand les filtres changent
+watch(
+  () => props.filters,
+  async () => {
+    if (map) {
+      await initMap()
+    }
+  },
+  { deep: true }
+)
 
 // Configurer Supabase Realtime pour écouter les changements
 const setupRealtime = () => {
@@ -248,23 +578,50 @@ const setupRealtime = () => {
               .eq('restaurant_id', restaurant.id)
               .eq('is_active', true)
 
+            const mockData = generateMockData(restaurant)
             const restaurantWithDeals: RestaurantWithDeals = {
               ...restaurant,
-              deals: deals || []
+              deals: deals || [],
+              ...mockData
             }
 
-            addMarker(restaurantWithDeals)
-            restaurantCount.value = markers.size
+            // Récupérer la note moyenne du restaurant (si disponible)
+            try {
+              const rating = await getRestaurantsAverageRatings([restaurant.id])
+              restaurantWithDeals.rating = rating.get(restaurant.id) || undefined
+            } catch (err) {
+              console.warn('Impossible de récupérer la note:', err)
+            }
 
-            // Recentrer la carte si c'est le premier marqueur
-            if (markers.size === 1 && map) {
-              map.setView([restaurant.lat, restaurant.lng], 13)
-            } else if (map && markers.size > 1) {
-              // Ajuster la vue pour inclure le nouveau marqueur
-              const bounds = L.latLngBounds(
-                Array.from(markers.values()).map(m => m.getLatLng())
-              )
-              map.fitBounds(bounds.pad(0.1), { maxZoom: 16 })
+            // Calculer la distance si c'est un client
+            if (userStore.user?.role === 'etudiant') {
+              const currentCoords = locationStore.getCurrentCoordinates()
+              if (currentCoords) {
+                restaurantWithDeals.distance = calculateDistance(
+                  currentCoords.lat,
+                  currentCoords.lng,
+                  restaurant.lat!,
+                  restaurant.lng!
+                )
+              }
+            }
+
+            // Appliquer les filtres avant d'ajouter le marqueur
+            const filtered = applyFilters([restaurantWithDeals])
+            if (filtered.length > 0) {
+              addMarker(restaurantWithDeals)
+              restaurantCount.value = markers.size
+
+              // Recentrer la carte si c'est le premier marqueur
+              if (markers.size === 1 && map) {
+                map.setView([restaurant.lat, restaurant.lng], 13)
+              } else if (map && markers.size > 1) {
+                // Ajuster la vue pour inclure le nouveau marqueur
+                const bounds = L.latLngBounds(
+                  Array.from(markers.values()).map(m => m.getLatLng())
+                )
+                map.fitBounds(bounds.pad(0.1), { maxZoom: 16 })
+              }
             }
           }
         } else if (payload.eventType === 'UPDATE' && payload.new) {
@@ -278,12 +635,42 @@ const setupRealtime = () => {
               .eq('restaurant_id', restaurant.id)
               .eq('is_active', true)
 
+            const mockData = generateMockData(restaurant)
             const restaurantWithDeals: RestaurantWithDeals = {
               ...restaurant,
-              deals: deals || []
+              deals: deals || [],
+              ...mockData
             }
 
-            updateMarker(restaurantWithDeals)
+            // Récupérer la note moyenne du restaurant (si disponible)
+            try {
+              const rating = await getRestaurantsAverageRatings([restaurant.id])
+              restaurantWithDeals.rating = rating.get(restaurant.id) || undefined
+            } catch (err) {
+              console.warn('Impossible de récupérer la note:', err)
+            }
+
+            // Calculer la distance si c'est un client
+            if (userStore.user?.role === 'etudiant') {
+              const currentCoords = locationStore.getCurrentCoordinates()
+              if (currentCoords) {
+                restaurantWithDeals.distance = calculateDistance(
+                  currentCoords.lat,
+                  currentCoords.lng,
+                  restaurant.lat!,
+                  restaurant.lng!
+                )
+              }
+            }
+
+            // Appliquer les filtres avant de mettre à jour le marqueur
+            const filtered = applyFilters([restaurantWithDeals])
+            if (filtered.length > 0) {
+              updateMarker(restaurantWithDeals)
+            } else {
+              // Si le restaurant ne correspond plus aux filtres, le retirer
+              removeMarker(restaurant.id)
+            }
           } else {
             // Si les coordonnées sont supprimées, retirer le marqueur
             removeMarker(restaurant.id)
@@ -330,17 +717,48 @@ const setupRealtime = () => {
             .single()
 
           if (!error && restaurant && restaurant.lat && restaurant.lng) {
+            const mockData = generateMockData(restaurant)
             const restaurantWithDeals: RestaurantWithDeals = {
               ...restaurant,
-              deals: (restaurant.deals || []).filter((d: Deal) => d.is_active)
+              deals: (restaurant.deals || []).filter((d: Deal) => d.is_active),
+              ...mockData
             }
 
-            // Mettre à jour le marqueur
-            if (markers.has(restaurantId)) {
-              updateMarker(restaurantWithDeals)
-            } else {
-              // Si le restaurant n'était pas sur la carte, l'ajouter
-              addMarker(restaurantWithDeals)
+            // Récupérer la note moyenne du restaurant (si disponible)
+            try {
+              const rating = await getRestaurantsAverageRatings([restaurant.id])
+              restaurantWithDeals.rating = rating.get(restaurant.id) || undefined
+            } catch (err) {
+              console.warn('Impossible de récupérer la note:', err)
+            }
+
+            // Calculer la distance si c'est un client
+            if (userStore.user?.role === 'etudiant') {
+              const currentCoords = locationStore.getCurrentCoordinates()
+              if (currentCoords) {
+                restaurantWithDeals.distance = calculateDistance(
+                  currentCoords.lat,
+                  currentCoords.lng,
+                  restaurant.lat!,
+                  restaurant.lng!
+                )
+              }
+            }
+
+            // Appliquer les filtres
+            const filtered = applyFilters([restaurantWithDeals])
+            if (filtered.length > 0) {
+              // Mettre à jour le marqueur
+              if (markers.has(restaurantId)) {
+                updateMarker(restaurantWithDeals)
+              } else {
+                // Si le restaurant n'était pas sur la carte, l'ajouter
+                addMarker(restaurantWithDeals)
+                restaurantCount.value = markers.size
+              }
+            } else if (markers.has(restaurantId)) {
+              // Si le restaurant ne correspond plus aux filtres, le retirer
+              removeMarker(restaurantId)
               restaurantCount.value = markers.size
             }
           }
@@ -367,11 +785,118 @@ const setupRealtime = () => {
               .single()
 
             if (!error && restaurant && restaurant.lat && restaurant.lng) {
+              const mockData = generateMockData(restaurant)
               const restaurantWithDeals: RestaurantWithDeals = {
                 ...restaurant,
-                deals: (restaurant.deals || []).filter((d: Deal) => d.is_active)
+                deals: (restaurant.deals || []).filter((d: Deal) => d.is_active),
+                ...mockData
               }
-              updateMarker(restaurantWithDeals)
+
+              // Récupérer la note moyenne du restaurant (si disponible)
+              try {
+                const rating = await getRestaurantsAverageRatings([restaurant.id])
+                restaurantWithDeals.rating = rating.get(restaurant.id) || undefined
+              } catch (err) {
+                console.warn('Impossible de récupérer la note:', err)
+              }
+
+              // Calculer la distance si c'est un client
+              if (userStore.user?.role === 'etudiant') {
+                const currentCoords = locationStore.getCurrentCoordinates()
+                if (currentCoords) {
+                  restaurantWithDeals.distance = calculateDistance(
+                    currentCoords.lat,
+                    currentCoords.lng,
+                    restaurant.lat!,
+                    restaurant.lng!
+                  )
+                }
+              }
+
+              // Appliquer les filtres
+              const filtered = applyFilters([restaurantWithDeals])
+              if (filtered.length > 0) {
+                updateMarker(restaurantWithDeals)
+              } else {
+                // Si le restaurant ne correspond plus aux filtres, le retirer
+                removeMarker(restaurantId)
+                restaurantCount.value = markers.size
+              }
+            }
+          }
+        }
+      }
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'restaurant_ratings'
+      },
+      async (payload) => {
+        console.log('🔄 Changement détecté sur restaurant_ratings:', payload.eventType)
+
+        // Quand une note change, mettre à jour le restaurant concerné
+        if (payload.new) {
+          const rating = payload.new as { restaurant_id: string }
+          const restaurantId = rating.restaurant_id
+
+          if (markers.has(restaurantId)) {
+            // Récupérer le restaurant avec ses données mises à jour
+            const { data: restaurant, error } = await supabase
+              .from('restaurants')
+              .select(`
+                *,
+                deals (
+                  id,
+                  title,
+                  description,
+                  category,
+                  is_active,
+                  created_at
+                )
+              `)
+              .eq('id', restaurantId)
+              .single()
+
+            if (!error && restaurant && restaurant.lat && restaurant.lng) {
+              const mockData = generateMockData(restaurant)
+              const restaurantWithDeals: RestaurantWithDeals = {
+                ...restaurant,
+                deals: (restaurant.deals || []).filter((d: Deal) => d.is_active),
+                ...mockData
+              }
+
+              // Récupérer la note moyenne mise à jour (si disponible)
+              try {
+                const ratings = await getRestaurantsAverageRatings([restaurant.id])
+                restaurantWithDeals.rating = ratings.get(restaurant.id) || undefined
+              } catch (err) {
+                console.warn('Impossible de récupérer la note:', err)
+              }
+
+              // Calculer la distance si c'est un client
+              if (userStore.user?.role === 'etudiant') {
+                const currentCoords = locationStore.getCurrentCoordinates()
+                if (currentCoords) {
+                  restaurantWithDeals.distance = calculateDistance(
+                    currentCoords.lat,
+                    currentCoords.lng,
+                    restaurant.lat!,
+                    restaurant.lng!
+                  )
+                }
+              }
+
+              // Appliquer les filtres
+              const filtered = applyFilters([restaurantWithDeals])
+              if (filtered.length > 0) {
+                updateMarker(restaurantWithDeals)
+              } else {
+                removeMarker(restaurantId)
+                restaurantCount.value = markers.size
+              }
             }
           }
         }
@@ -393,6 +918,11 @@ onUnmounted(() => {
   if (realtimeChannel) {
     supabase.removeChannel(realtimeChannel)
     realtimeChannel = null
+  }
+
+  if (userMarker && map) {
+    map.removeLayer(userMarker)
+    userMarker = null
   }
 
   if (map) {
@@ -579,12 +1109,37 @@ onUnmounted(() => {
   margin: 0.25rem 0;
 }
 
+.rate-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.rate-button:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .leaflet-popup-content-wrapper {
   border-radius: 0.5rem;
 }
 
 .leaflet-popup-tip {
   background: white;
+}
+
+.user-popup {
+  font-weight: 600;
+  color: #667eea;
 }
 </style>
 

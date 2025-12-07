@@ -15,3 +15,5 @@ Ce dossier contient les patterns et guidelines pour l'architecture du projet.
 - Testabilité
 - Maintenabilité
 
+
+

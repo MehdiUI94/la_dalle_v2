@@ -1,52 +1,50 @@
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabaseClient'
 import { useUserStore } from '@/stores/user'
 import type { Role } from '@/types/profile'
 
 export function useAuth() {
   const userStore = useUserStore()
-  const router = useRouter()
   const isLoading = ref(false)
   const errorMessage = ref<string | null>(null)
 
-  // Connexion via les tables clients/restaurants
+  // Connexion via les tables etudiants/restaurants
   const login = async (email: string, password: string) => {
     try {
       isLoading.value = true
       errorMessage.value = null
 
-      // 1. Chercher dans la table CLIENTS
-      const { data: client, error: clientError } = await supabase
-        .from('clients')
+      // 1. Chercher dans la table ETUDIANTS
+      const { data: etudiant, error: etudiantError } = await supabase
+        .from('etudiants')
         .select('*, profiles(role, display_name)')
         .eq('email', email)
         .eq('password', password)
         .maybeSingle()
 
-      if (client && !clientError) {
-        const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles
+      if (etudiant && !etudiantError) {
+        const profile = Array.isArray(etudiant.profiles) ? etudiant.profiles[0] : etudiant.profiles
 
-        // Connexion réussie en tant que CLIENT
+        // Connexion réussie en tant qu'ÉTUDIANT
         userStore.setUser({
-          id: client.id,
-          username: profile?.display_name || 'Client',
-          email: client.email || email,
-          role: 'client',
+          id: etudiant.id,
+          username: profile?.display_name || 'Étudiant',
+          email: etudiant.email || email,
+          role: 'etudiant',
           points: 0,
           level: 1,
           badges: [],
-          createdAt: new Date(client.created_at),
+          createdAt: new Date(etudiant.created_at),
         })
 
         // Sauvegarder la session dans localStorage
         localStorage.setItem('la_dalle_user', JSON.stringify({
-          id: client.id,
-          role: 'client',
-          email: client.email
+          id: etudiant.id,
+          role: 'etudiant',
+          email: etudiant.email
         }))
 
-        router.push('/deals')
+        // La redirection sera gérée par le composant qui appelle login()
         return true
       }
 
@@ -80,7 +78,7 @@ export function useAuth() {
           email: restaurant.email
         }))
 
-        router.push('/dashboard/restaurant')
+        // La redirection sera gérée par le composant qui appelle login()
         return true
       }
 
@@ -96,7 +94,7 @@ export function useAuth() {
     }
   }
 
-  // Inscription : créer directement dans les tables clients/restaurants
+  // Inscription : créer directement dans les tables etudiants/restaurants
   const signup = async (
     email: string,
     password: string,
@@ -108,8 +106,8 @@ export function useAuth() {
       errorMessage.value = null
 
       // Vérifier si l'email existe déjà
-      const { data: existingClient } = await supabase
-        .from('clients')
+      const { data: existingEtudiant } = await supabase
+        .from('etudiants')
         .select('id')
         .eq('email', email)
         .maybeSingle()
@@ -120,7 +118,7 @@ export function useAuth() {
         .eq('email', email)
         .maybeSingle()
 
-      if (existingClient || existingResto) {
+      if (existingEtudiant || existingResto) {
         throw new Error('Cet email est déjà utilisé')
       }
 
@@ -128,7 +126,7 @@ export function useAuth() {
       const newUserId = crypto.randomUUID()
 
       // Créer le profil
-      const displayName = role === 'client'
+      const displayName = role === 'etudiant'
         ? `${additionalData?.firstname || ''} ${additionalData?.lastname || ''}`.trim()
         : additionalData?.name || 'Nouveau Restaurant'
 
@@ -143,14 +141,14 @@ export function useAuth() {
       if (profileError) throw profileError
 
       // Créer dans la table appropriée selon le rôle
-      if (role === 'client') {
+      if (role === 'etudiant') {
         // Vérifier que le N° INE est fourni (obligatoire pour les étudiants)
         if (!additionalData?.ine) {
           throw new Error('Le N° INE est obligatoire pour s\'inscrire en tant qu\'étudiant')
         }
 
-        const { error: clientError } = await supabase
-          .from('clients')
+        const { error: etudiantError } = await supabase
+          .from('etudiants')
           .insert({
             id: newUserId,
             email,
@@ -161,12 +159,48 @@ export function useAuth() {
             address: additionalData?.address || null,
             phone: additionalData?.phone || null,
             ine: additionalData?.ine || null,
-            is_student: true, // Tous les clients sont des étudiants
+            is_student: true, // Tous les étudiants sont des étudiants
             notifications_email: additionalData?.notifications?.email || false,
             notifications_phone: additionalData?.notifications?.phone || false,
           })
 
-        if (clientError) throw clientError
+        if (etudiantError) throw etudiantError
+
+        // Si une adresse est fournie, créer une entrée dans etudiant_addresses comme adresse par défaut
+        if (additionalData?.address) {
+          // Géocoder l'adresse pour obtenir les coordonnées
+          let coords: { lat: number; lng: number } | null = null
+          try {
+            const response = await fetch(
+              `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(additionalData.address)}&limit=1`
+            )
+            const data = await response.json()
+            if (data.features && data.features.length > 0) {
+              const [lng, lat] = data.features[0].geometry.coordinates
+              coords = { lat, lng }
+            }
+          } catch (geocodeError) {
+            console.warn('Erreur lors du géocodage de l\'adresse:', geocodeError)
+            // On continue même si le géocodage échoue
+          }
+
+          // Créer l'adresse par défaut dans etudiant_addresses
+          const { error: addressError } = await supabase
+            .from('etudiant_addresses')
+            .insert({
+              etudiant_id: newUserId,
+              address: additionalData.address,
+              lat: coords?.lat || null,
+              lng: coords?.lng || null,
+              is_default: true,
+              label: 'Adresse par défaut'
+            })
+
+          if (addressError) {
+            console.warn('Erreur lors de la création de l\'adresse par défaut:', addressError)
+            // On ne fait pas échouer l'inscription si l'adresse ne peut pas être créée
+          }
+        }
       } else {
         const { error: restoError } = await supabase
           .from('restaurants')
@@ -201,29 +235,29 @@ export function useAuth() {
     }
   }
 
-  // Charger le profil utilisateur depuis les tables clients/restaurants
+  // Charger le profil utilisateur depuis les tables etudiants/restaurants
   const loadUserProfile = async (userId: string, userRole: Role) => {
-    if (userRole === 'client') {
-      const { data: client, error } = await supabase
-        .from('clients')
+    if (userRole === 'etudiant') {
+      const { data: etudiant, error } = await supabase
+        .from('etudiants')
         .select('*, profiles(role, display_name)')
         .eq('id', userId)
         .single()
 
       if (error) throw error
-      if (!client) throw new Error('Profil client non trouvé')
+      if (!etudiant) throw new Error('Profil étudiant non trouvé')
 
-      const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles
+      const profile = Array.isArray(etudiant.profiles) ? etudiant.profiles[0] : etudiant.profiles
 
       userStore.setUser({
-        id: client.id,
-        username: profile?.display_name || 'Client',
-        email: client.email || '',
-        role: 'client',
+        id: etudiant.id,
+        username: profile?.display_name || 'Étudiant',
+        email: etudiant.email || '',
+        role: 'etudiant',
         points: 0,
         level: 1,
         badges: [],
-        createdAt: new Date(client.created_at),
+        createdAt: new Date(etudiant.created_at),
       })
     } else {
       const { data: restaurant, error } = await supabase
@@ -265,22 +299,22 @@ export function useAuth() {
     }
   }
 
-  // Mode test : connexion client rapide (utilise les vraies données de la BD)
+  // Mode test : connexion étudiant rapide (utilise les vraies données de la BD)
   const loginTestClient = async () => {
     const success = await login('client@test.com', 'test123456')
     if (!success) {
       // Fallback si la connexion échoue
       userStore.setTestUser({
-        id: 'test-client',
-        username: 'Client Test',
+        id: 'test-etudiant',
+        username: 'Étudiant Test',
         email: 'client@test.com',
-        role: 'client',
+        role: 'etudiant',
         points: 200,
         level: 2,
         badges: [],
         createdAt: new Date(),
       })
-      router.push('/deals')
+      // La redirection sera gérée par le composant qui appelle loginTestClient()
     }
   }
 
@@ -299,14 +333,13 @@ export function useAuth() {
         badges: [],
         createdAt: new Date(),
       })
-      router.push('/dashboard/restaurant')
+      // La redirection sera gérée par le composant qui appelle loginTestRestaurant()
     }
   }
 
   const logout = async () => {
     localStorage.removeItem('la_dalle_user')
     userStore.clearUser()
-    router.push('/')
   }
 
   const isAuthenticated = () => {
