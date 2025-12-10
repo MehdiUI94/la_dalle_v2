@@ -26,14 +26,23 @@ const filters = ref<FilterOptions>({
 <style scoped>
 .map-view {
   padding: 2rem 80px;
-  min-height: calc(100vh - 140px);
-  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--foreground);
   position: relative;
   z-index: 1;
 }
 
 .map-view :deep(.back-button) {
   margin-bottom: 1.5rem;
+}
+
+.map-view :deep(.restaurant-map) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {

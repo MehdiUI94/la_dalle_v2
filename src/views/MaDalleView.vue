@@ -1,10 +1,10 @@
 <template>
   <div class="ma-dalle-view">
-    <h2 class="page-title">Ma dalle</h2>
+    <h2 class="page-title section-title">MA DALLE</h2>
     
     <!-- Scanner QR Code -->
     <section class="scanner-section">
-      <h3 class="section-title">Scanner un QR code</h3>
+      <h3 class="section-title">SCANNER UN QR CODE</h3>
       <div v-if="error" class="error-message">
         {{ error }}
       </div>
@@ -31,7 +31,7 @@
 
     <!-- Liste des restaurants visités -->
     <section v-if="visits.length > 0" class="visits-section">
-      <h3 class="section-title">Mes restaurants visités</h3>
+      <h3 class="section-title">MES RESTAURANTS VISITÉS</h3>
       
       <div v-if="visitsLoading" class="loading-message">
         <div class="spinner"></div>
@@ -297,13 +297,11 @@ onUnmounted(() => {
 .ma-dalle-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
 }
 
 .page-title {
-  font-size: 2rem;
   margin-bottom: 2rem;
-  font-weight: 700;
 }
 
 .scanner-section,
@@ -312,9 +310,7 @@ onUnmounted(() => {
 }
 
 .section-title {
-  font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  font-weight: 600;
 }
 
 .scanner-wrapper {
@@ -349,7 +345,7 @@ onUnmounted(() => {
 .scanner-frame {
   width: 70%;
   height: 70%;
-  border: 3px solid #667eea;
+  border: 3px solid var(--primary);
   border-radius: 1rem;
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
 }
@@ -361,7 +357,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   padding: 0.75rem 1.5rem;
   background: rgba(239, 68, 68, 0.9);
-  color: white;
+  color: var(--foreground);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -387,26 +383,25 @@ onUnmounted(() => {
 
 .start-button {
   padding: 1rem 2rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }
 
 .start-button:hover:not(:disabled) {
-  background: #5568d3;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .start-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .start-button:disabled {
@@ -532,8 +527,8 @@ onUnmounted(() => {
 
 .rate-button {
   padding: 0.75rem 1.5rem;
-  background: #667eea;
-  color: white;
+  background: var(--primary);
+  color: var(--foreground);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -582,7 +577,7 @@ onUnmounted(() => {
 .progress-count {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary);
 }
 
 .progress-bar-container {
@@ -596,13 +591,13 @@ onUnmounted(() => {
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--yellow) 100%);
   border-radius: 6px;
   transition: width 0.3s ease;
 }
 
 .remaining-text {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin: 0;
 }
@@ -613,7 +608,7 @@ onUnmounted(() => {
 }
 
 .visit-date {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 1rem;
   padding-top: 1rem;

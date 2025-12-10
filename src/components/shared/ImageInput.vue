@@ -201,7 +201,7 @@ watch(() => props.modelValue, (newValue) => {
 
 .tab.active {
   background: white;
-  color: #667eea;
+  color: var(--primary);
   border-color: white;
 }
 
@@ -310,7 +310,7 @@ watch(() => props.modelValue, (newValue) => {
 
 .error-message {
   color: #ffcccc;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   margin-top: 0.5rem;
 }
 

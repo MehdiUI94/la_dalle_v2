@@ -7,36 +7,53 @@ export default {
   theme: {
     extend: {
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         primary: {
-          DEFAULT: '#EF4444',
-          50: '#FEF2F2',
-          100: '#FEE2E2',
-          200: '#FECACA',
-          300: '#FCA5A5',
-          400: '#F87171',
-          500: '#EF4444',
-          600: '#DC2626',
-          700: '#B91C1C',
-          800: '#991B1B',
-          900: '#7F1D1D',
+          DEFAULT: 'var(--primary)',
+          light: '#FF8C33',
+          dark: '#CC5500',
         },
+        lime: 'var(--lime)',
+        yellow: 'var(--yellow)',
+        black: 'var(--black)',
+        white: 'var(--white)',
+        gray: {
+          100: 'var(--gray-100)',
+          500: 'var(--gray-500)',
+        },
+        // Anciennes couleurs conservées pour compatibilité
         accent: {
-          DEFAULT: '#3B82F6',
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          200: '#BFDBFE',
-          300: '#93C5FD',
-          400: '#60A5FA',
-          500: '#3B82F6',
-          600: '#2563EB',
-          700: '#1D4ED8',
-          800: '#1E40AF',
-          900: '#1E3A8A',
+          DEFAULT: '#764ba2',
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#764ba2',
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Poppins', 'sans-serif'],
+      },
+      fontSize: {
+        'hero-mobile': ['3rem', { lineHeight: '1.1', fontWeight: '900' }], // 48px
+        'hero-desktop': ['4.5rem', { lineHeight: '1.1', fontWeight: '900' }], // 72px
+        'section-mobile': ['2rem', { lineHeight: '1.1', fontWeight: '900' }], // 32px
+        'section-desktop': ['2rem', { lineHeight: '1.1', fontWeight: '900' }], // 32px
+        'body-mobile': ['1rem', { lineHeight: '1.4', fontWeight: '400' }], // 16px
+        'body-desktop': ['1.125rem', { lineHeight: '1.4', fontWeight: '400' }], // 18px
+      },
+      fontWeight: {
+        black: '900',
+        bold: '700',
+        medium: '500',
+        normal: '400',
       },
     },
   },

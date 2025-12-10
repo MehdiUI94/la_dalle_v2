@@ -24,9 +24,10 @@ export function useRatingNotifications() {
       if (notificationsError) throw notificationsError
 
       return data || []
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la récupération des notifications:', err)
-      error.value = err.message || 'Erreur lors de la récupération des notifications'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la récupération des notifications')
+      error.value = error.message
       return []
     } finally {
       isLoading.value = false
@@ -47,9 +48,10 @@ export function useRatingNotifications() {
       if (updateError) throw updateError
 
       return true
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la mise à jour de la notification:', err)
-      error.value = err.message || 'Erreur lors de la mise à jour de la notification'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la mise à jour de la notification')
+      error.value = error.message
       return false
     } finally {
       isLoading.value = false
@@ -71,9 +73,10 @@ export function useRatingNotifications() {
       if (updateError) throw updateError
 
       return true
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la mise à jour des notifications:', err)
-      error.value = err.message || 'Erreur lors de la mise à jour des notifications'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la mise à jour des notifications')
+      error.value = error.message
       return false
     } finally {
       isLoading.value = false
@@ -92,7 +95,7 @@ export function useRatingNotifications() {
       if (notificationError) throw notificationError
 
       return !!data
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la vérification de la notification:', err)
       return false
     }
@@ -110,7 +113,7 @@ export function useRatingNotifications() {
       if (countError) throw countError
 
       return count || 0
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du comptage des notifications:', err)
       return 0
     }

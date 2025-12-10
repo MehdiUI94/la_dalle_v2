@@ -1,7 +1,7 @@
 <template>
   <div class="filter-bar">
     <div class="filter-header">
-      <span class="filter-label-text">Filtrer les restaurants par</span>
+      <span class="filter-label-text body-text">Filtrer les restaurants par</span>
     </div>
 
     <div class="filters-row">
@@ -378,7 +378,6 @@ const getFilterLabelForType = (type: string): string => {
 }
 
 .filter-label-text {
-  font-size: 1rem;
   font-weight: 500;
   color: white;
 }
@@ -409,7 +408,7 @@ const getFilterLabelForType = (type: string): string => {
 }
 
 .filter-type-label {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
@@ -527,7 +526,7 @@ const getFilterLabelForType = (type: string): string => {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: var(--primary);
 }
 
 @media (max-width: 768px) {

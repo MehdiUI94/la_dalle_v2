@@ -123,7 +123,7 @@ onMounted(() => {
 
 .download-button {
   padding: 0.75rem 1.5rem;
-  background: #667eea;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 0.5rem;

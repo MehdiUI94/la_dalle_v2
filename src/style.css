@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Background */
+  --background: #FFFFFF; /* Fond principal - BLANC */
+  --foreground: #1A1A1A; /* Texte - NOIR */
+
+  /* Accent Colors */
+  --primary: #FF6B00; /* Orange électrique - CTA, highlights */
+  --lime: #00FF88; /* Vert lime - Badges positifs, succès */
+  --yellow: #FFE500; /* Jaune vif - Badges, attention */
+
+  /* Neutrals */
+  --black: #1A1A1A; /* Bordures, texte */
+  --white: #FAFAFA; /* Fond, texte sur dark */
+  --gray-100: #F5F5F5; /* Fond secondaire */
+  --gray-500: #666666; /* Texte muted */
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -9,10 +26,11 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--background);
+  color: var(--foreground);
   min-height: 100vh;
 }
 
@@ -40,7 +58,7 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -63,5 +81,195 @@ html {
 body {
   overflow: hidden;
   height: 100%;
+}
+
+/* Typographie - Classes selon la charte graphique */
+
+/* Hero Title */
+.hero-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 3rem; /* 48px mobile */
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 4.5rem; /* 72px desktop */
+  }
+}
+
+/* Section Title */
+.section-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 2rem; /* 32px */
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+/* Body Text */
+.body-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1rem; /* 16px mobile */
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .body-text {
+    font-size: 1.125rem; /* 18px desktop */
+  }
+}
+
+/* Shadows & Borders - Style Brutaliste */
+
+/* Standard Border */
+.brutalist-border {
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+}
+
+/* Small Border */
+.brutalist-border-sm {
+  border: 2px solid var(--black);
+  box-shadow: 3px 3px 0 0 var(--black);
+}
+
+/* Hover Effect */
+.brutalist-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
+}
+
+/* Form Fields - Style Brutaliste */
+
+/* Input Standard */
+.form-field {
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-field::placeholder {
+  color: var(--gray-500);
+}
+
+.form-field:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
+}
+
+.form-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--gray-100);
+}
+
+/* Textarea */
+.form-textarea {
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-textarea:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
+}
+
+/* Select */
+.form-select {
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-select:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
+}
+
+/* Checkbox */
+.form-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.form-checkbox:checked {
+  background: var(--primary);
+}
+
+/* Radio */
+.form-radio {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* Labels */
+.form-label {
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-label.required::after {
+  content: ' *';
+  color: var(--primary);
+}
+
+/* Messages d'Erreur */
+.form-error {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  font-size: 0.875rem;
+}
+
+/* Field Error State */
+.form-field.error,
+.form-textarea.error,
+.form-select.error {
+  border-color: var(--primary);
+  box-shadow: 4px 4px 0 0 var(--primary);
 }
 

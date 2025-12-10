@@ -35,7 +35,7 @@
   right: 0;
   background: rgba(255, 255, 255, 0.95); /* Identique au cercle */
   backdrop-filter: blur(10px); /* Identique au cercle */
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 3px solid var(--black);
   display: flex;
   justify-content: space-around;
   align-items: stretch; /* Étire les éléments sur toute la hauteur */
@@ -55,7 +55,7 @@
   justify-content: center; /* Centre les éléments verticalement */
   gap: 0.125rem; /* Gap réduit mais lisible */
   text-decoration: none;
-  color: #666;
+  color: var(--foreground);
   transition: color 0.2s, transform 0.1s, opacity 0.1s, background 0.2s;
   flex: 1;
   padding: 0; /* Pas de padding */
@@ -65,20 +65,20 @@
 }
 
 .nav-item:hover {
-  color: #667eea;
+  color: var(--primary);
   transform: translateY(-2px);
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(255, 107, 0, 0.1);
 }
 
 .nav-item:active {
   transform: translateY(0);
   opacity: 0.8;
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(255, 107, 0, 0.2);
 }
 
 .nav-item.router-link-active {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.15);
+  color: var(--primary);
+  background: rgba(255, 107, 0, 0.15);
 }
 
 .nav-item.home-item {
@@ -142,13 +142,13 @@
 }
 
 .icon {
-  font-size: 1.25rem; /* Taille ajustée pour être proportionnelle aux labels de 14px */
+  font-size: 1.25rem; /* Taille ajustée pour être proportionnelle aux labels */
   line-height: 1;
 }
 
 .label {
-  font-size: 0.875rem; /* Minimum 14px (0.875rem = 14px) */
-  font-weight: 500;
+  font-size: 1rem; /* 16px */
+  font-weight: 700; /* Bold */
   text-align: center;
 }
 
@@ -167,11 +167,12 @@
   }
 
   .icon {
-    font-size: 1.15rem; /* Taille ajustée pour être proportionnelle aux labels de 14px */
+    font-size: 1.15rem; /* Taille ajustée pour être proportionnelle aux labels */
   }
 
   .label {
-    font-size: 0.875rem; /* Minimum 14px (0.875rem = 14px) */
+    font-size: 1rem; /* 16px */
+    font-weight: 700; /* Bold */
   }
 }
 </style>

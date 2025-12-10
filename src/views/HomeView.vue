@@ -2,8 +2,9 @@
   <div class="home-view">
     <div class="hero">
       <img src="/logo_v2.png" alt="LA DALLE" class="hero-logo" />
-      <p class="hero-subtitle">Food Deals à Paris</p>
-      <p class="hero-description">1 acheté = 1 offert dans les restos/bars</p>
+      <h1 class="hero-title">LA DALLE</h1>
+      <p class="hero-subtitle body-text">Food Deals à Paris</p>
+      <p class="hero-description body-text">1 acheté = 1 offert dans les restos/bars</p>
       <router-link to="/deals" class="cta-button">Découvrir les deals</router-link>
     </div>
   </div>
@@ -21,7 +22,7 @@
 .hero {
   text-align: center;
   padding: 4rem 0;
-  color: white;
+  color: var(--foreground);
 }
 
 .hero-logo {
@@ -35,13 +36,12 @@
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
   margin-bottom: 0.5rem;
   opacity: 0.9;
+  font-weight: 500;
 }
 
 .hero-description {
-  font-size: 1.25rem;
   margin-bottom: 2rem;
   opacity: 0.8;
 }
@@ -49,25 +49,26 @@
 .cta-button {
   display: inline-block;
   padding: 1rem 2rem;
-  background: white;
-  color: #667eea;
+  background: var(--primary);
+  color: var(--background);
   text-decoration: none;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .cta-button:active {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 @media (max-width: 768px) {

@@ -3,7 +3,7 @@
     <div class="signup-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="signup-card">
-        <h2>Inscription</h2>
+        <h2 class="section-title">INSCRIPTION</h2>
         
         <!-- Choix du type d'utilisateur avec tabs -->
         <div class="tabs-container">
@@ -36,7 +36,8 @@
               <input
                 id="client-firstname"
                 v-model="clientForm.firstname"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="Jean"
                 required
               />
@@ -46,7 +47,8 @@
               <input
                 id="client-lastname"
                 v-model="clientForm.lastname"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="Dupont"
                 required
               />
@@ -58,6 +60,7 @@
             <input
               id="client-age"
               v-model.number="clientForm.age"
+              class="form-field"
               type="number"
               min="13"
               max="120"
@@ -81,6 +84,7 @@
             <input
               id="client-email"
               v-model="clientForm.email"
+              class="form-field"
               type="email"
               placeholder="votre@email.com"
               required
@@ -92,6 +96,7 @@
             <input
               id="client-password"
               v-model="clientForm.password"
+              class="form-field"
               type="password"
               placeholder="••••••••"
               required
@@ -107,6 +112,7 @@
             <input
               id="client-phone"
               v-model="clientForm.phone"
+              class="form-field"
               type="tel"
               placeholder="06 12 34 56 78"
             />
@@ -117,6 +123,7 @@
             <input
               id="client-ine"
               v-model="clientForm.ine"
+              class="form-field"
               type="text"
               placeholder="1234567890A"
               required
@@ -132,14 +139,16 @@
               <label class="checkbox-label">
                 <input
                   v-model="clientForm.notifications.email"
-                  type="checkbox"
+                  class="form-field"
+              type="checkbox"
                 />
                 <span>Par email</span>
               </label>
               <label class="checkbox-label">
                 <input
                   v-model="clientForm.notifications.phone"
-                  type="checkbox"
+                  class="form-field"
+              type="checkbox"
                 />
                 <span>Par téléphone</span>
               </label>
@@ -164,7 +173,8 @@
               <input
                 id="resto-firstname"
                 v-model="restaurantForm.ownerFirstname"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="Jean"
                 required
               />
@@ -174,7 +184,8 @@
               <input
                 id="resto-lastname"
                 v-model="restaurantForm.ownerLastname"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="Dupont"
                 required
               />
@@ -186,6 +197,7 @@
             <input
               id="resto-name"
               v-model="restaurantForm.name"
+              class="form-field"
               type="text"
               placeholder="Le Bon Restaurant"
               required
@@ -208,6 +220,7 @@
               <span class="optional-label">(optionnel)</span>
             </label>
             <textarea
+              class="form-textarea"
               id="resto-description"
               v-model="restaurantForm.description"
               rows="3"
@@ -230,7 +243,8 @@
               <input
                 id="resto-siren"
                 v-model="restaurantForm.siren"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="123456789"
                 required
               />
@@ -240,7 +254,8 @@
               <input
                 id="resto-siret"
                 v-model="restaurantForm.siret"
-                type="text"
+                class="form-field"
+              type="text"
                 placeholder="12345678901234"
                 required
               />
@@ -252,6 +267,7 @@
             <input
               id="resto-email"
               v-model="restaurantForm.email"
+              class="form-field"
               type="email"
               placeholder="contact@restaurant.com"
               required
@@ -263,6 +279,7 @@
             <input
               id="resto-password"
               v-model="restaurantForm.password"
+              class="form-field"
               type="password"
               placeholder="••••••••"
               required
@@ -278,6 +295,7 @@
             <input
               id="resto-social"
               v-model="restaurantForm.socialMedia"
+              class="form-field"
               type="text"
               placeholder="https://instagram.com/restaurant, https://facebook.com/restaurant"
             />
@@ -291,6 +309,7 @@
             <input
               id="resto-phone"
               v-model="restaurantForm.phone"
+              class="form-field"
               type="tel"
               placeholder="01 23 45 67 89"
             />
@@ -302,14 +321,16 @@
               <label class="checkbox-label">
                 <input
                   v-model="restaurantForm.notifications.email"
-                  type="checkbox"
+                  class="form-field"
+              type="checkbox"
                 />
                 <span>Par email</span>
               </label>
               <label class="checkbox-label">
                 <input
                   v-model="restaurantForm.notifications.phone"
-                  type="checkbox"
+                  class="form-field"
+              type="checkbox"
                 />
                 <span>Par téléphone</span>
               </label>
@@ -476,7 +497,7 @@ const handleSignup = async () => {
   align-items: center;
   padding: 2rem 80px;
   padding-top: 4rem;
-  color: white;
+  color: var(--foreground);
   position: relative;
 }
 
@@ -507,7 +528,6 @@ const handleSignup = async () => {
 .signup-card h2 {
   margin-bottom: 1.5rem;
   text-align: center;
-  font-size: 1.75rem;
 }
 
 .tabs-container {
@@ -536,7 +556,7 @@ const handleSignup = async () => {
 }
 
 .tab:hover {
-  color: white;
+  color: var(--foreground);
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -547,7 +567,7 @@ const handleSignup = async () => {
 
 .tab.active {
   background: white;
-  color: #667eea;
+  color: var(--primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -557,7 +577,7 @@ const handleSignup = async () => {
   background: rgba(255, 255, 255, 0.05);
   border-left: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 0.25rem;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -592,36 +612,17 @@ const handleSignup = async () => {
 
 .form-group input,
 .form-group textarea {
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 1rem;
-  font-family: inherit;
+  /* Utilise les classes form-field et form-textarea définies dans style.css */
 }
 
 .form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.15);
+  min-height: 100px;
 }
 
 .field-hint {
   display: block;
   margin-top: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
@@ -666,26 +667,26 @@ const handleSignup = async () => {
 
 .submit-button {
   padding: 0.875rem;
-  background: white;
-  color: #667eea;
-  border: none;
-  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
   margin-top: 0.5rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .submit-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .submit-button:disabled {
@@ -701,7 +702,7 @@ const handleSignup = async () => {
 }
 
 .login-link a {
-  color: white;
+  color: var(--foreground);
   font-weight: 600;
   text-decoration: underline;
 }

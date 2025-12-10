@@ -293,7 +293,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%);
   border-radius: 1rem;
   width: 100%;
   max-width: 500px;
@@ -408,7 +408,7 @@ onMounted(() => {
 }
 
 .rating-count {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -465,7 +465,7 @@ onMounted(() => {
   border: 1px solid rgba(239, 68, 68, 0.4);
   border-radius: 0.25rem;
   color: #ffcccc;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s;
   margin-top: 0.5rem;
@@ -513,7 +513,7 @@ onMounted(() => {
 .char-count {
   display: block;
   text-align: right;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 0.25rem;
 }
@@ -567,7 +567,7 @@ onMounted(() => {
   background: white;
   border: none;
   border-radius: 0.5rem;
-  color: #667eea;
+  color: var(--primary);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -617,7 +617,7 @@ onMounted(() => {
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
   background: white;
-  color: #667eea;
+  color: var(--primary);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;

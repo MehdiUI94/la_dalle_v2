@@ -14,22 +14,36 @@ export function useAuth() {
       isLoading.value = true
       errorMessage.value = null
 
+      // Validation des entrées
+      if (!email || !password) {
+        throw new Error('Veuillez remplir tous les champs')
+      }
+
+      // Normaliser l'email (minuscules, trim)
+      const normalizedEmail = email.toLowerCase().trim()
+
       // 1. Chercher dans la table ETUDIANTS
       const { data: etudiant, error: etudiantError } = await supabase
         .from('etudiants')
         .select('*, profiles(role, display_name)')
-        .eq('email', email)
+        .eq('email', normalizedEmail)
         .eq('password', password)
         .maybeSingle()
 
-      if (etudiant && !etudiantError) {
+      // Vérifier s'il y a une erreur de connexion (pas juste "pas trouvé")
+      if (etudiantError && etudiantError.code !== 'PGRST116') {
+        console.error('Erreur lors de la recherche de l\'étudiant:', etudiantError)
+        throw new Error('Erreur lors de la connexion. Veuillez réessayer.')
+      }
+
+      if (etudiant) {
         const profile = Array.isArray(etudiant.profiles) ? etudiant.profiles[0] : etudiant.profiles
 
         // Connexion réussie en tant qu'ÉTUDIANT
         userStore.setUser({
           id: etudiant.id,
-          username: profile?.display_name || 'Étudiant',
-          email: etudiant.email || email,
+          username: profile?.display_name || `${etudiant.firstname || ''} ${etudiant.lastname || ''}`.trim() || 'Étudiant',
+          email: etudiant.email || normalizedEmail,
           role: 'etudiant',
           points: 0,
           level: 1,
@@ -52,18 +66,24 @@ export function useAuth() {
       const { data: restaurant, error: restaurantError } = await supabase
         .from('restaurants')
         .select('*, profiles(role, display_name)')
-        .eq('email', email)
+        .eq('email', normalizedEmail)
         .eq('password', password)
         .maybeSingle()
 
-      if (restaurant && !restaurantError) {
+      // Vérifier s'il y a une erreur de connexion (pas juste "pas trouvé")
+      if (restaurantError && restaurantError.code !== 'PGRST116') {
+        console.error('Erreur lors de la recherche du restaurant:', restaurantError)
+        throw new Error('Erreur lors de la connexion. Veuillez réessayer.')
+      }
+
+      if (restaurant) {
         const profile = Array.isArray(restaurant.profiles) ? restaurant.profiles[0] : restaurant.profiles
 
         // Connexion réussie en tant que RESTAURANT
         userStore.setUser({
           id: restaurant.id,
           username: profile?.display_name || restaurant.name,
-          email: restaurant.email || email,
+          email: restaurant.email || normalizedEmail,
           role: 'restaurant',
           points: 0,
           level: 1,
@@ -82,15 +102,37 @@ export function useAuth() {
         return true
       }
 
-      // Aucun utilisateur trouvé
+      // Aucun utilisateur trouvé avec cet email et ce mot de passe
       throw new Error('Email ou mot de passe incorrect')
 
-    } catch (err: any) {
-      console.error(err)
-      errorMessage.value = err.message ?? 'Erreur de connexion'
+    } catch (err: unknown) {
+      console.error('Erreur de connexion:', err)
+      const error = err instanceof Error ? err : new Error('Erreur de connexion')
+      errorMessage.value = error.message
       return false
     } finally {
       isLoading.value = false
+    }
+  }
+
+  interface AdditionalSignupData {
+    firstname?: string
+    lastname?: string
+    age?: number
+    address?: string
+    phone?: string
+    ine?: string
+    name?: string
+    ownerFirstname?: string
+    ownerLastname?: string
+    description?: string
+    logo?: string
+    siren?: string
+    siret?: string
+    socialMedia?: string
+    notifications?: {
+      email?: boolean
+      phone?: boolean
     }
   }
 
@@ -99,7 +141,7 @@ export function useAuth() {
     email: string,
     password: string,
     role: Role,
-    additionalData?: any
+    additionalData?: AdditionalSignupData
   ) => {
     try {
       isLoading.value = true
@@ -226,9 +268,10 @@ export function useAuth() {
       }
 
       return true
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      errorMessage.value = err.message ?? 'Erreur d\'inscription'
+      const error = err instanceof Error ? err : new Error('Erreur d\'inscription')
+      errorMessage.value = error.message
       return false
     } finally {
       isLoading.value = false
@@ -304,7 +347,7 @@ export function useAuth() {
     const success = await login('client@test.com', 'test123456')
     if (!success) {
       // Fallback si la connexion échoue
-      userStore.setTestUser({
+      userStore.setUser({
         id: 'test-etudiant',
         username: 'Étudiant Test',
         email: 'client@test.com',
@@ -323,7 +366,7 @@ export function useAuth() {
     const success = await login('resto@test.com', 'test123456')
     if (!success) {
       // Fallback si la connexion échoue
-      userStore.setTestUser({
+      userStore.setUser({
         id: 'test-restaurant',
         username: 'Restaurant Test',
         email: 'resto@test.com',

@@ -11,12 +11,15 @@ cursor_rules/
 │   ├── couleurs/        # Palette de couleurs, thème
 │   ├── icones/          # Système d'icônes, bibliothèque
 │   ├── spacing/         # Grille, espacements, padding/margin
+│   ├── shadows/         # Bordures et ombres brutalistes
 │   └── composants/      # Guidelines pour chaque type de composant
+│       ├── fields/       # Design des champs de formulaire (style brutaliste)
 │       ├── forms/
 │       ├── navigation/
 │       ├── cards/
 │       ├── buttons/
-│       └── modals/
+│       ├── modals/
+│       └── scrollbar/    # Règles obligatoires pour la scrollbar personnalisée
 ├── stack-technique/     # Documentation technique des outils utilisés
 │   ├── supabase/        # Règles Supabase, schéma, RLS
 │   └── leaflet/         # Configuration Leaflet, marqueurs, popups

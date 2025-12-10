@@ -31,21 +31,31 @@ export function useAddressAutocomplete() {
         throw new Error('Erreur lors de la recherche d\'adresses')
       }
 
-      const data = await response.json()
+      const data = await response.json() as {
+        features: Array<{
+          properties: {
+            label: string
+            city: string
+            postcode: string
+            id?: string
+          }
+        }>
+      }
 
-      suggestions.value = data.features.map((feature: any) => {
+      suggestions.value = data.features.map((feature) => {
         const props = feature.properties
         return {
           label: props.label,
           value: props.label,
           city: props.city,
           postcode: props.postcode,
-          id: feature.properties.id || `${props.label}-${props.city}-${props.postcode}`
+          id: props.id || `${props.label}-${props.city}-${props.postcode}`
         }
       })
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur recherche adresse:', err)
-      error.value = err.message || 'Erreur lors de la recherche'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la recherche')
+      error.value = error.message
       suggestions.value = []
     } finally {
       isLoading.value = false

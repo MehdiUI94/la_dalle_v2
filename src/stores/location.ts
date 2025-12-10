@@ -85,9 +85,10 @@ export const useLocationStore = defineStore('location', () => {
           }
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du chargement des adresses:', err)
-      error.value = err.message || 'Erreur lors du chargement des adresses'
+      const error = err instanceof Error ? err : new Error('Erreur lors du chargement des adresses')
+      error.value = error.message
     } finally {
       isLoading.value = false
     }
@@ -197,9 +198,10 @@ export const useLocationStore = defineStore('location', () => {
       await loadAddresses(userId)
 
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de l\'ajout de l\'adresse:', err)
-      error.value = err.message || 'Erreur lors de l\'ajout de l\'adresse'
+      const error = err instanceof Error ? err : new Error('Erreur lors de l\'ajout de l\'adresse')
+      error.value = error.message
       throw err
     } finally {
       isLoading.value = false
@@ -228,9 +230,10 @@ export const useLocationStore = defineStore('location', () => {
 
       // Recharger les adresses
       await loadAddresses(userId)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la définition de l\'adresse par défaut:', err)
-      error.value = err.message || 'Erreur lors de la définition de l\'adresse par défaut'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la définition de l\'adresse par défaut')
+      error.value = error.message
       throw err
     } finally {
       isLoading.value = false
@@ -252,9 +255,10 @@ export const useLocationStore = defineStore('location', () => {
 
       // Recharger les adresses
       await loadAddresses(userId)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la suppression de l\'adresse:', err)
-      error.value = err.message || 'Erreur lors de la suppression de l\'adresse'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la suppression de l\'adresse')
+      error.value = error.message
       throw err
     } finally {
       isLoading.value = false

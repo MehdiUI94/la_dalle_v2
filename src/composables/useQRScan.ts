@@ -99,9 +99,10 @@ export function useQRScan() {
       }
 
       return visit
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de l\'enregistrement de la visite:', err)
-      error.value = err.message || 'Erreur lors de l\'enregistrement de la visite'
+      const error = err instanceof Error ? err : new Error('Erreur lors de l\'enregistrement de la visite')
+      error.value = error.message
       return null
     } finally {
       isLoading.value = false
@@ -122,7 +123,7 @@ export function useQRScan() {
       if (visitError) throw visitError
 
       return !!data
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la vérification de la visite:', err)
       return false
     }
@@ -140,7 +141,7 @@ export function useQRScan() {
       if (visitsError) throw visitsError
 
       return data || []
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la récupération des visites:', err)
       return []
     }

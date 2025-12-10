@@ -1,7 +1,7 @@
 <template>
   <a @click.prevent="goBack" href="#" class="back-button" aria-label="Retour">
     <span class="chevron">‹</span>
-    <span class="back-text">{{ backText }}</span>
+    <span class="back-text body-text">{{ backText }}</span>
   </a>
 </template>
 
@@ -46,7 +46,6 @@ const goBack = () => {
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   color: white;
-  font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -76,7 +75,6 @@ const goBack = () => {
 @media (max-width: 640px) {
   .back-button {
     padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
   }
 
   .chevron {

@@ -23,9 +23,10 @@ export function useFavorites() {
       if (favoritesError) throw favoritesError
 
       favorites.value = data || []
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du chargement des favoris:', err)
-      error.value = err.message || 'Erreur lors du chargement des favoris'
+      const error = err instanceof Error ? err : new Error('Erreur lors du chargement des favoris')
+      error.value = error.message
     } finally {
       isLoading.value = false
     }

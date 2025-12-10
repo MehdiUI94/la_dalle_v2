@@ -6,6 +6,7 @@
     <div 
       v-if="showScrollbar"
       class="custom-scrollbar-track"
+      :class="{ 'with-header': hasHeader, 'with-footer': hasFooter }"
       ref="trackRef"
       @mousedown="handleTrackClick"
     >
@@ -22,6 +23,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+
+interface Props {
+  hasHeader?: boolean
+  hasFooter?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  hasHeader: false,
+  hasFooter: false
+})
 
 const route = useRoute()
 const wrapperRef = ref<HTMLElement | null>(null)
@@ -48,6 +59,7 @@ const thumbTop = computed(() => {
   if (!trackRef.value || clientHeight.value === 0 || scrollHeight.value === 0 || scrollHeight.value <= clientHeight.value) return 0
   const trackHeight = trackRef.value.clientHeight
   const scrollableHeight = scrollHeight.value - clientHeight.value
+  if (scrollableHeight <= 0) return 0
   const top = (scrollTop.value / scrollableHeight) * (trackHeight - thumbHeight.value)
   return Math.max(0, Math.min(top, trackHeight - thumbHeight.value))
 })
@@ -179,7 +191,9 @@ watch(() => [contentRef.value?.scrollHeight, contentRef.value?.clientHeight], ()
 .custom-scrollbar-wrapper {
   position: relative;
   height: 100%;
+  width: 100%;
   display: flex;
+  overflow: hidden; /* Empêcher tout débordement */
 }
 
 .custom-scrollbar-content {
@@ -187,11 +201,11 @@ watch(() => [contentRef.value?.scrollHeight, contentRef.value?.clientHeight], ()
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 8px;
-  /* S'assurer que le contenu ne crée pas de scroll inutile */
+  /* S'assurer que le contenu peut scroller */
   box-sizing: border-box;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
-  /* Permettre au contenu de dépasser sans être coupé */
+  /* Permettre au contenu de dépasser la hauteur du conteneur pour activer le scroll */
   min-height: 100%;
 }
 
@@ -201,14 +215,37 @@ watch(() => [contentRef.value?.scrollHeight, contentRef.value?.clientHeight], ()
 
 .custom-scrollbar-track {
   position: absolute;
-  right: 8px;
-  top: 40px;
-  bottom: 40px;
+  right: 16px; /* Décollé du bord droit */
+  top: 16px; /* Décollé par défaut */
+  bottom: 16px; /* Décollé par défaut */
   width: 12px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   cursor: pointer;
   z-index: 10;
+  /* Ne pas bloquer le scroll de la souris sur le contenu */
+  pointer-events: none;
+}
+
+/* Ajuster le top si le header est présent - 40px d'espace entre header et scrollbar */
+.custom-scrollbar-track.with-header {
+  top: 40px; /* 40px d'espace entre le header et la scrollbar */
+}
+
+/* Ajuster le bottom si le footer est présent */
+.custom-scrollbar-track.with-footer {
+  bottom: 120px; /* Décollé du footer + 40px pour raccourcir la scrollbar */
+}
+
+/* Si header ET footer sont présents */
+.custom-scrollbar-track.with-header.with-footer {
+  top: 40px; /* 40px d'espace entre le header et la scrollbar */
+  bottom: 120px; /* Décollé du footer + 40px pour raccourcir la scrollbar */
+}
+
+.custom-scrollbar-track:hover,
+.custom-scrollbar-track:active {
+  pointer-events: auto;
 }
 
 .custom-scrollbar-thumb {
@@ -219,6 +256,7 @@ watch(() => [contentRef.value?.scrollHeight, contentRef.value?.clientHeight], ()
   border: 2px solid rgba(255, 255, 255, 0.1);
   cursor: grab;
   transition: background 0.2s;
+  pointer-events: auto;
 }
 
 .custom-scrollbar-thumb:hover {

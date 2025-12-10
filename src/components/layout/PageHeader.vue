@@ -4,11 +4,11 @@
       <router-link to="/" class="logo-link">
         <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       </router-link>
-      <h1 class="user-name">{{ displayName }}</h1>
+      <h1 class="user-name body-text">{{ displayName.toUpperCase() }}</h1>
       <div v-if="user?.role === 'etudiant'" class="location-info">
         <router-link to="/addresses" class="location-link">
           <span class="location-icon">📍</span>
-          <span class="location-text">{{ locationDisplayText }}</span>
+          <span class="location-text body-text">{{ locationDisplayText }}</span>
           <span class="chevron-icon">›</span>
         </router-link>
       </div>
@@ -41,10 +41,10 @@ const locationDisplayText = computed(() => {
 
 <style scoped>
 .page-header {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1rem 2rem;
+  border-bottom: 3px solid var(--black);
+  padding: 1rem 80px;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -78,9 +78,8 @@ const locationDisplayText = computed(() => {
 }
 
 .user-name {
-  font-size: 1.5rem;
   font-weight: 700;
-  color: white;
+  color: var(--foreground);
   margin: 0;
   flex: 1;
   white-space: nowrap;
@@ -92,7 +91,6 @@ const locationDisplayText = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -101,14 +99,14 @@ const locationDisplayText = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
   text-decoration: none;
   transition: color 0.2s;
   cursor: pointer;
 }
 
 .location-link:hover {
-  color: white;
+  color: var(--primary);
 }
 
 .location-icon {
@@ -118,19 +116,19 @@ const locationDisplayText = computed(() => {
 .location-text {
   font-weight: 500;
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-decoration-color: var(--gray-500);
   text-underline-offset: 2px;
 }
 
 .chevron-icon {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
   transition: transform 0.2s, color 0.2s;
   margin-left: 0.25rem;
 }
 
 .location-link:hover .chevron-icon {
-  color: white;
+  color: var(--primary);
   transform: translateX(2px);
 }
 
@@ -144,11 +142,7 @@ const locationDisplayText = computed(() => {
   }
 
   .user-name {
-    font-size: 1.1rem;
-  }
-
-  .location-info {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 
   .location-text {
@@ -159,7 +153,7 @@ const locationDisplayText = computed(() => {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .page-header {
     padding: 0.75rem 1rem;
   }
@@ -173,11 +167,7 @@ const locationDisplayText = computed(() => {
   }
 
   .user-name {
-    font-size: 1rem;
-  }
-
-  .location-info {
-    font-size: 0.8rem;
+    font-size: 0.875rem;
   }
 
   .location-text {

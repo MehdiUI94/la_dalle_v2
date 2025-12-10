@@ -43,7 +43,7 @@ const initMap = () => {
     className: 'user-marker-preview',
     html: `
       <div style="
-        background-color: #667eea;
+        background-color: var(--primary);
         width: 30px;
         height: 30px;
         border-radius: 50%;

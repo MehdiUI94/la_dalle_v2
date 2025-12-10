@@ -2,13 +2,13 @@
   <div class="qr-scan-view">
     <BackButton />
     <div class="scan-container">
-      <h2 class="scan-title">Scanner le QR code du restaurant</h2>
+      <h2 class="scan-title section-title">SCANNER LE QR CODE DU RESTAURANT</h2>
       
-      <div v-if="error" class="error-message">
+      <div v-if="error" class="error-message body-text">
         {{ error }}
       </div>
 
-      <div v-if="successMessage" class="success-message">
+      <div v-if="successMessage" class="success-message body-text">
         {{ successMessage }}
       </div>
 
@@ -28,10 +28,10 @@
       </div>
 
       <div v-if="scannedRestaurant" class="scanned-restaurant-info">
-        <h3>Visite enregistrée !</h3>
-        <p><strong>{{ scannedRestaurant.name }}</strong></p>
-        <p v-if="scannedRestaurant.address">{{ scannedRestaurant.address }}</p>
-        <p class="success-note">Vous recevrez une notification dans 30 minutes pour noter ce restaurant.</p>
+        <h3 class="section-title">VISITE ENREGISTRÉE !</h3>
+        <p class="body-text"><strong>{{ scannedRestaurant.name.toUpperCase() }}</strong></p>
+        <p v-if="scannedRestaurant.address" class="body-text">{{ scannedRestaurant.address }}</p>
+        <p class="success-note body-text">Vous recevrez une notification dans 30 minutes pour noter ce restaurant.</p>
       </div>
     </div>
   </div>
@@ -187,7 +187,7 @@ onUnmounted(() => {
 .qr-scan-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -200,8 +200,6 @@ onUnmounted(() => {
 }
 
 .scan-title {
-  font-size: 1.75rem;
-  font-weight: 600;
   margin: 0;
   text-align: center;
 }
@@ -237,7 +235,7 @@ onUnmounted(() => {
 .scanner-frame {
   width: 70%;
   height: 70%;
-  border: 3px solid #667eea;
+  border: 3px solid var(--primary);
   border-radius: 1rem;
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
 }
@@ -249,7 +247,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   padding: 0.75rem 1.5rem;
   background: rgba(239, 68, 68, 0.9);
-  color: white;
+  color: var(--foreground);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -275,26 +273,25 @@ onUnmounted(() => {
 
 .start-button {
   padding: 1rem 2rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }
 
 .start-button:hover:not(:disabled) {
-  background: #5568d3;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .start-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .start-button:disabled {

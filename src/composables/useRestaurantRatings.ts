@@ -19,7 +19,7 @@ export function useRestaurantRatings() {
       if (ratingError) throw ratingError
 
       return data ? parseFloat(data.toString()) : null
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du calcul de la note moyenne:', err)
       return null
     }
@@ -74,7 +74,7 @@ export function useRestaurantRatings() {
           }
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la récupération des notes:', err)
       // En cas d'erreur, retourner une map vide pour ne pas bloquer l'affichage
     }
@@ -95,7 +95,7 @@ export function useRestaurantRatings() {
       if (ratingError) throw ratingError
 
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la récupération de la note de l\'étudiant:', err)
       return null
     }
@@ -162,9 +162,10 @@ export function useRestaurantRatings() {
         if (insertError) throw insertError
         return data
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de l\'ajout/mise à jour de la note:', err)
-      error.value = err.message || 'Erreur lors de l\'enregistrement de la note'
+      const error = err instanceof Error ? err : new Error('Erreur lors de l\'enregistrement de la note')
+      error.value = error.message
       return null
     } finally {
       isLoading.value = false
@@ -185,9 +186,10 @@ export function useRestaurantRatings() {
 
       if (deleteError) throw deleteError
       return true
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la suppression de la note:', err)
-      error.value = err.message || 'Erreur lors de la suppression de la note'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la suppression de la note')
+      error.value = error.message
       return false
     } finally {
       isLoading.value = false

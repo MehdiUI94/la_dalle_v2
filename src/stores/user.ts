@@ -9,10 +9,6 @@ export const useUserStore = defineStore('user', () => {
     user.value = newUser
   }
 
-  function setTestUser(newUser: User) {
-    user.value = newUser
-  }
-
   function clearUser() {
     user.value = null
   }
@@ -20,7 +16,6 @@ export const useUserStore = defineStore('user', () => {
   return {
     user,
     setUser,
-    setTestUser,
     clearUser
   }
 })

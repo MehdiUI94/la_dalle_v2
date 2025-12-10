@@ -1,12 +1,12 @@
 <template>
   <div class="deals-view">
-    <h2 class="page-title">Mes restos</h2>
-    <p class="page-subtitle">Découvrez les meilleures offres du moment</p>
+    <h2 class="page-title section-title">MES RESTOS</h2>
+    <p class="page-subtitle body-text">Découvrez les meilleures offres du moment</p>
     <div class="deals-container">
       <div class="deal-card">
-        <h3>🍕 Pizza Margherita</h3>
-        <p>1 pizza achetée = 1 pizza offerte</p>
-        <span class="location">📍 11ème arrondissement</span>
+        <h3 class="deal-title">🍕 PIZZA MARGHERITA</h3>
+        <p class="body-text">1 pizza achetée = 1 pizza offerte</p>
+        <span class="location body-text">📍 11ème arrondissement</span>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@ import BackButton from '@/components/shared/BackButton.vue'
 .deals-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
 }
 
 .deals-view :deep(.back-button) {
@@ -28,13 +28,13 @@ import BackButton from '@/components/shared/BackButton.vue'
 }
 
 .page-title {
-  font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .page-subtitle {
   opacity: 0.9;
   margin-bottom: 2rem;
+  font-weight: 500;
 }
 
 .deals-container {
@@ -44,16 +44,17 @@ import BackButton from '@/components/shared/BackButton.vue'
 }
 
 .deal-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
+  background: var(--background);
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
-.deal-card h3 {
-  font-size: 1.5rem;
+.deal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 .location {

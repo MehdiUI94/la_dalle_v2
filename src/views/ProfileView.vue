@@ -1,31 +1,31 @@
 <template>
   <div class="profile-view">
     <BackButton />
-    <h2 class="page-title">Mon Profil</h2>
+    <h2 class="page-title section-title">MON PROFIL</h2>
     
     <div v-if="user" class="profile-card">
       <div class="profile-header">
         <div class="avatar">
           {{ user.username.charAt(0).toUpperCase() }}
         </div>
-        <h3>{{ user.username }}</h3>
-        <p class="user-email">{{ user.email }}</p>
-        <span class="role-badge" :class="user.role">
+        <h3 class="username-title">{{ user.username.toUpperCase() }}</h3>
+        <p class="user-email body-text">{{ user.email }}</p>
+        <span class="role-badge body-text" :class="user.role">
           {{ user.role === 'etudiant' ? '👤 Étudiant' : '🍽️ Restaurant' }}
         </span>
       </div>
 
       <div class="profile-stats">
         <div class="stat-item">
-          <span class="stat-label">Points</span>
+          <span class="stat-label body-text">Points</span>
           <span class="stat-value">{{ user.points }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Niveau</span>
+          <span class="stat-label body-text">Niveau</span>
           <span class="stat-value">{{ user.level }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Badges</span>
+          <span class="stat-label body-text">Badges</span>
           <span class="stat-value">{{ user.badges.length }}</span>
         </div>
       </div>
@@ -38,7 +38,7 @@
     </div>
 
     <div v-else class="profile-card">
-      <p>Chargement du profil...</p>
+      <p class="body-text">Chargement du profil...</p>
     </div>
   </div>
 </template>
@@ -66,7 +66,7 @@ const handleLogout = async () => {
 .profile-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
 }
 
 .profile-view :deep(.back-button) {
@@ -74,7 +74,6 @@ const handleLogout = async () => {
 }
 
 .page-title {
-  font-size: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -95,24 +94,25 @@ const handleLogout = async () => {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   font-weight: 700;
-  color: white;
+  color: var(--foreground);
   margin: 0 auto 1rem;
 }
 
-.profile-header h3 {
+.username-title {
   font-size: 1.5rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 .user-email {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
@@ -120,7 +120,6 @@ const handleLogout = async () => {
   display: inline-block;
   padding: 0.5rem 1rem;
   border-radius: 50px;
-  font-size: 0.85rem;
   font-weight: 600;
 }
 
@@ -152,14 +151,13 @@ const handleLogout = async () => {
 }
 
 .stat-label {
-  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white;
+  color: var(--foreground);
 }
 
 .profile-actions {
@@ -170,11 +168,11 @@ const handleLogout = async () => {
 .logout-button {
   padding: 0.875rem 2rem;
   background: rgba(239, 68, 68, 0.8);
-  color: white;
+  color: var(--foreground);
   border: none;
   border-radius: 50px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }

@@ -2,7 +2,7 @@
   <div id="app">
     <PageHeader v-if="showHeader" />
     <main class="main-content" :class="{ 'with-header': showHeader, 'with-footer': showBottomNav }">
-      <CustomScrollbar>
+      <CustomScrollbar :has-header="showHeader" :has-footer="showBottomNav">
         <div class="main-content-wrapper">
           <router-view v-slot="{ Component, route }">
             <Transition :name="route.meta.transition || 'fade'" mode="out-in">
@@ -63,6 +63,9 @@ watch(
   flex: 1;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important pour que flex fonctionne correctement */
 }
 
 .main-content.with-header {
@@ -70,12 +73,24 @@ watch(
 }
 
 .main-content.with-footer {
-  /* Pas de padding-bottom pour éviter de cacher le contenu */
+  /* Padding-bottom pour éviter que le contenu soit caché par le BottomNav */
 }
 
 /* Wrapper pour le contenu */
 .main-content-wrapper {
-  /* Supprimer min-height pour éviter les problèmes de scroll inutile */
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Ajouter padding-bottom uniquement quand le footer est visible */
+.main-content.with-footer .main-content-wrapper {
+  padding-bottom: 80px; /* Espace pour le BottomNav */
+}
+
+@media (max-width: 768px) {
+  .main-content.with-footer .main-content-wrapper {
+    padding-bottom: 80px; /* Garder 80px même sur mobile pour le cercle du BottomNav */
+  }
 }
 </style>
 

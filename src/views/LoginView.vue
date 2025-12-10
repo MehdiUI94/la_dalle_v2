@@ -3,7 +3,7 @@
     <div class="login-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="login-card">
-        <h2>Connexion</h2>
+        <h2 class="section-title">CONNEXION</h2>
         
         <!-- Choix du type d'utilisateur avec tabs -->
         <div class="tabs-container">
@@ -31,8 +31,10 @@
               id="email"
               v-model="email"
               type="email"
-              placeholder="votre@email.com"
+              placeholder="Votre@email.com"
               required
+              autocomplete="email"
+              class="form-field"
             />
           </div>
 
@@ -44,6 +46,8 @@
               type="password"
               placeholder="••••••••"
               required
+              class="form-field"
+              autocomplete="current-password"
             />
           </div>
 
@@ -127,7 +131,7 @@ const handleTestRestaurant = async () => {
   align-items: center;
   justify-content: center;
   padding: 2rem 80px;
-  color: white;
+  color: var(--foreground);
   position: relative;
 }
 
@@ -157,7 +161,6 @@ const handleTestRestaurant = async () => {
 .login-card h2 {
   margin-bottom: 1.5rem;
   text-align: center;
-  font-size: 1.75rem;
 }
 
 .tabs-container {
@@ -186,7 +189,7 @@ const handleTestRestaurant = async () => {
 }
 
 .tab:hover {
-  color: white;
+  color: var(--foreground);
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -197,7 +200,7 @@ const handleTestRestaurant = async () => {
 
 .tab.active {
   background: white;
-  color: #667eea;
+  color: var(--primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -219,22 +222,7 @@ const handleTestRestaurant = async () => {
 }
 
 .form-group input {
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 1rem;
-}
-
-.form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.15);
+  /* Utilise les classes form-field définies dans style.css */
 }
 
 .error-message {
@@ -249,26 +237,26 @@ const handleTestRestaurant = async () => {
 
 .submit-button {
   padding: 0.875rem;
-  background: white;
-  color: #667eea;
-  border: none;
-  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
   margin-top: 0.5rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .submit-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .submit-button:disabled {
@@ -324,13 +312,13 @@ const handleTestRestaurant = async () => {
 }
 
 .test-button.etudiant {
-  background: #667eea;
-  color: white;
+  background: var(--primary);
+  color: var(--foreground);
 }
 
 .test-button.restaurant {
   background: #ef4444;
-  color: white;
+  color: var(--foreground);
 }
 
 .signup-link {
@@ -341,7 +329,7 @@ const handleTestRestaurant = async () => {
 }
 
 .signup-link a {
-  color: white;
+  color: var(--foreground);
   font-weight: 600;
   text-decoration: underline;
 }

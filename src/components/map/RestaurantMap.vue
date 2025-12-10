@@ -349,7 +349,7 @@ const createUserIcon = () => {
     className: 'user-marker',
     html: `
       <div style="
-        background-color: #667eea;
+        background-color: var(--primary);
         width: 30px;
         height: 30px;
         border-radius: 50%;
@@ -442,6 +442,15 @@ const initMap = async () => {
       throw new Error('Conteneur de carte non trouvé')
     }
 
+    // Attendre que le conteneur soit complètement rendu et ait une hauteur
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    // Vérifier que le conteneur a une hauteur
+    if (mapContainer.value.offsetHeight === 0) {
+      console.warn('Le conteneur de carte n\'a pas de hauteur, nouvelle tentative...')
+      await new Promise(resolve => setTimeout(resolve, 200))
+    }
+
     // Obtenir la position du client (temporaire ou par défaut)
     let centerLat = defaultCenter[0]
     let centerLng = defaultCenter[1]
@@ -460,9 +469,10 @@ const initMap = async () => {
     let restaurants: RestaurantWithDeals[] = []
     try {
       restaurants = await fetchRestaurants()
-    } catch (fetchError: any) {
+    } catch (fetchError: unknown) {
       console.error('Erreur lors du chargement des restaurants:', fetchError)
-      error.value = fetchError.message || 'Erreur lors du chargement des restaurants'
+      const err = fetchError instanceof Error ? fetchError : new Error('Erreur lors du chargement des restaurants')
+      error.value = err.message
       isLoading.value = false
       return
     }
@@ -484,6 +494,13 @@ const initMap = async () => {
       zoomControl: true,
       attributionControl: true
     })
+
+    // Forcer le recalcul de la taille de la carte après un court délai
+    setTimeout(() => {
+      if (map) {
+        map.invalidateSize()
+      }
+    }, 100)
 
     // Ajouter la couche de tuiles OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -521,9 +538,10 @@ const initMap = async () => {
     }
 
     isLoading.value = false
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Erreur lors de l\'initialisation de la carte:', err)
-    error.value = err.message || 'Erreur lors du chargement de la carte'
+    const error = err instanceof Error ? err : new Error('Erreur lors du chargement de la carte')
+    error.value = error.message
     isLoading.value = false
   }
 }
@@ -940,6 +958,9 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   min-height: 500px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   z-index: 1;
   margin: 0 0;
 }
@@ -947,6 +968,7 @@ onUnmounted(() => {
 .map-container {
   width: 100%;
   height: 100%;
+  flex: 1;
   min-height: 500px;
   border-radius: 1rem;
   overflow: hidden;
@@ -1102,7 +1124,7 @@ onUnmounted(() => {
   margin: 0;
   padding-left: 1.25rem;
   color: #4b5563;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .popup-deals li {
@@ -1112,7 +1134,7 @@ onUnmounted(() => {
 .rate-button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -1139,7 +1161,7 @@ onUnmounted(() => {
 
 .user-popup {
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary);
 }
 </style>
 

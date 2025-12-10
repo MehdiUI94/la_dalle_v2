@@ -35,9 +35,10 @@ export function useImageUpload() {
 
       uploadProgress.value = 100
       return publicUrl
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de l\'upload:', error)
-      uploadError.value = error.message || 'Erreur lors de l\'upload de l\'image'
+      const err = error instanceof Error ? error : new Error('Erreur lors de l\'upload de l\'image')
+      uploadError.value = err.message
       return null
     } finally {
       isUploading.value = false

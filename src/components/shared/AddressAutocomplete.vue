@@ -284,19 +284,19 @@ watch(() => suggestions.value, (newSuggestions) => {
 }
 
 .suggestion-city {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: #666;
 }
 
 .error-message {
   color: #ffcccc;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   margin-top: 0.5rem;
 }
 
 .warning-message {
   color: #ffd700;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   margin-top: 0.5rem;
 }
 

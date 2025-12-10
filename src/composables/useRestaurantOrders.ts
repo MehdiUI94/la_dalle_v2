@@ -40,9 +40,10 @@ export function useRestaurantOrders() {
       if (insertError) throw insertError
 
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la création de la commande:', err)
-      error.value = err.message || 'Erreur lors de la création de la commande'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la création de la commande')
+      error.value = error.message
       return null
     } finally {
       isLoading.value = false
@@ -61,7 +62,7 @@ export function useRestaurantOrders() {
       if (countError) throw countError
 
       return count || 0
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du comptage des commandes:', err)
       return 0
     }
@@ -74,7 +75,7 @@ export function useRestaurantOrders() {
       const modulo = orderCount % 10
       const remaining = modulo === 0 ? 0 : 10 - modulo
       return remaining
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du calcul des commandes restantes:', err)
       return 10
     }
@@ -107,8 +108,23 @@ export function useRestaurantOrders() {
       if (!visits) return []
 
       // Pour chaque visite, récupérer le nombre de commandes et les notes
+      interface VisitWithRestaurant {
+        id: string
+        restaurant_id: string
+        scanned_at: string
+        restaurants: {
+          id: string
+          name: string
+          address: string | null
+        } | {
+          id: string
+          name: string
+          address: string | null
+        }[]
+      }
+      
       const visitsWithOrders: RestaurantVisitWithOrder[] = await Promise.all(
-        visits.map(async (visit: any) => {
+        (visits as VisitWithRestaurant[]).map(async (visit) => {
           const restaurant = Array.isArray(visit.restaurants) ? visit.restaurants[0] : visit.restaurants
           
           const orderCount = await getOrderCount(etudiantId, visit.restaurant_id)
@@ -147,9 +163,10 @@ export function useRestaurantOrders() {
       )
 
       return visitsWithOrders
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la récupération des visites avec commandes:', err)
-      error.value = err.message || 'Erreur lors de la récupération des visites'
+      const error = err instanceof Error ? err : new Error('Erreur lors de la récupération des visites')
+      error.value = error.message
       return []
     } finally {
       isLoading.value = false

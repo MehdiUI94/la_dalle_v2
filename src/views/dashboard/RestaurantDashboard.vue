@@ -1,9 +1,9 @@
 <template>
   <div class="dashboard-view">
     <BackButton />
-    <h2 class="page-title">Dashboard Restaurant</h2>
+    <h2 class="page-title section-title">DASHBOARD RESTAURANT</h2>
     <div class="dashboard-card">
-      <p>Gestion des deals à venir...</p>
+      <p class="body-text">Gestion des deals à venir...</p>
     </div>
   </div>
 </template>
@@ -16,20 +16,18 @@ import BackButton from '@/components/shared/BackButton.vue'
 .dashboard-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
 }
 
 .page-title {
-  font-size: 2rem;
   margin-bottom: 2rem;
 }
 
 .dashboard-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
+  background: var(--background);
   padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 @media (max-width: 768px) {

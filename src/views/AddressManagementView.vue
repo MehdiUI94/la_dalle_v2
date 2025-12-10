@@ -73,7 +73,7 @@
       <!-- Formulaire pour ajouter une nouvelle adresse -->
       <div v-if="showAddForm" class="add-address-section">
         <div class="form-header">
-          <h3 class="section-title">{{ addresses.length > 0 ? 'Ajouter une nouvelle adresse' : 'Ajouter votre première adresse' }}</h3>
+          <h3 class="section-title">{{ addresses.length > 0 ? 'AJOUTER UNE NOUVELLE ADRESSE' : 'AJOUTER VOTRE PREMIÈRE ADRESSE' }}</h3>
           <button @click="closeAddForm" class="close-button" title="Fermer">
             ✕
           </button>
@@ -86,6 +86,7 @@
               id="address-label"
               v-model="newAddress.label"
               type="text"
+              class="form-field"
               placeholder="Ex: Domicile, Travail, Université..."
               maxlength="50"
             />
@@ -243,7 +244,7 @@ const deleteAddress = async (addressId: string) => {
 .address-management-view {
   padding: 2rem 80px;
   min-height: calc(100vh - 140px);
-  color: white;
+  color: var(--foreground);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -312,8 +313,8 @@ const deleteAddress = async (addressId: string) => {
 }
 
 .address-card.is-selected {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  background: rgba(255, 107, 0, 0.1);
 }
 
 .address-header {
@@ -343,7 +344,7 @@ const deleteAddress = async (addressId: string) => {
   background: rgba(255, 193, 7, 0.3);
   color: #ffc107;
   border-radius: 50px;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
@@ -355,7 +356,7 @@ const deleteAddress = async (addressId: string) => {
 
 .address-coords {
   margin: 0.5rem 0 0 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -367,7 +368,7 @@ const deleteAddress = async (addressId: string) => {
 .action-button {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  color: var(--foreground);
   border-radius: 0.5rem;
   width: 40px;
   height: 40px;
@@ -390,8 +391,8 @@ const deleteAddress = async (addressId: string) => {
 }
 
 .action-button.select-button.active {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .action-button.default-button:hover {
@@ -421,7 +422,7 @@ const deleteAddress = async (addressId: string) => {
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.75rem;
-  color: white;
+  color: var(--foreground);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -467,7 +468,7 @@ const deleteAddress = async (addressId: string) => {
 .close-button {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  color: var(--foreground);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -507,22 +508,7 @@ const deleteAddress = async (addressId: string) => {
 }
 
 .form-group input {
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 1rem;
-}
-
-.form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.15);
+  /* Utilise les classes form-field définies dans style.css */
 }
 
 .address-preview {
@@ -564,25 +550,25 @@ const deleteAddress = async (addressId: string) => {
 
 .submit-button {
   padding: 0.875rem 1.5rem;
-  background: white;
-  color: #667eea;
-  border: none;
-  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.1s;
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
 }
 
 .submit-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(0, 0);
   opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .submit-button:disabled {
