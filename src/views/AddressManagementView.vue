@@ -351,13 +351,13 @@ const deleteAddress = async (addressId: string) => {
 .address-text {
   margin: 0.5rem 0;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--foreground);
 }
 
 .address-coords {
   margin: 0.5rem 0 0 0;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
 }
 
 .address-actions {
@@ -544,7 +544,7 @@ const deleteAddress = async (addressId: string) => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 

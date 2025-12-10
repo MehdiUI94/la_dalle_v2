@@ -1,6 +1,5 @@
 <template>
   <div class="deals-view">
-    <h2 class="page-title section-title">MES RESTOS</h2>
     <p class="page-subtitle body-text">Découvrez les meilleures offres du moment</p>
     <div class="deals-container">
       <div class="deal-card">

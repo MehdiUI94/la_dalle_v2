@@ -1,10 +1,5 @@
 <template>
-  <div class="filter-bar">
-    <div class="filter-header">
-      <span class="filter-label-text body-text">Filtrer les restaurants par</span>
-    </div>
-
-    <div class="filters-row">
+  <div class="filters-row">
       <!-- Filtres actifs -->
       <div
         v-for="(activeFilter, index) in activeFilters"
@@ -133,7 +128,6 @@
         Réinitialiser tous les filtres
       </button>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -364,40 +358,23 @@ const getFilterLabelForType = (type: string): string => {
 </script>
 
 <style scoped>
-.filter-bar {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.filter-header {
-  margin-bottom: 1rem;
-}
-
-.filter-label-text {
-  font-weight: 500;
-  color: white;
-}
-
 .filters-row {
+  margin-bottom: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .active-filter-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
+  background: var(--background);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
   padding: 0.5rem 0.75rem;
-  min-width: 200px;
+  min-height: 60px;
 }
 
 .filter-content {
@@ -410,16 +387,16 @@ const getFilterLabelForType = (type: string): string => {
 .filter-type-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .remove-filter-button {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #ffcccc;
-  border-radius: 50%;
+  background: var(--background);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  color: var(--foreground);
   width: 24px;
   height: 24px;
   display: flex;
@@ -434,21 +411,25 @@ const getFilterLabelForType = (type: string): string => {
 }
 
 .remove-filter-button:hover {
-  background: rgba(239, 68, 68, 0.3);
-  transform: scale(1.1);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--black);
+}
+
+.remove-filter-button:active {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 0 var(--black);
 }
 
 .add-filter-container {
-  min-width: 200px;
 }
 
 .add-filter-select {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px dashed rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  background: var(--background);
+  color: var(--foreground);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -456,29 +437,28 @@ const getFilterLabelForType = (type: string): string => {
 
 .add-filter-select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .add-filter-select option {
-  background: #1f2937;
-  color: white;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .filter-actions {
   margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 40px;
   display: flex;
   justify-content: center;
 }
 
 .reset-button {
   padding: 0.5rem 1rem;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  border-radius: 0.5rem;
-  color: #ffcccc;
+  background: var(--primary);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
+  color: var(--background);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -486,16 +466,21 @@ const getFilterLabelForType = (type: string): string => {
 }
 
 .reset-button:hover {
-  background: rgba(239, 68, 68, 0.3);
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--black);
+}
+
+.reset-button:active {
+  transform: translate(0, 0);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .filter-input-select {
   padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
+  border: 2px solid var(--black);
+  background: var(--background);
+  box-shadow: 2px 2px 0 0 var(--black);
+  color: var(--foreground);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -504,13 +489,13 @@ const getFilterLabelForType = (type: string): string => {
 
 .filter-input-select:focus {
   outline: none;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .filter-input-select option {
-  background: #1f2937;
-  color: white;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .filter-checkbox-label-inline {
@@ -519,7 +504,7 @@ const getFilterLabelForType = (type: string): string => {
   gap: 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
-  color: white;
+  color: var(--foreground);
 }
 
 .filter-input-checkbox {

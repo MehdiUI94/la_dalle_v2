@@ -314,7 +314,7 @@ onMounted(() => {
 
 .modal-header h2 {
   margin: 0;
-  color: white;
+  color: var(--foreground);
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -322,7 +322,7 @@ onMounted(() => {
 .close-button {
   background: none;
   border: none;
-  color: white;
+  color: var(--foreground);
   font-size: 2rem;
   cursor: pointer;
   width: 32px;
@@ -375,7 +375,7 @@ onMounted(() => {
 .rating-label {
   margin: 0 0 0.5rem 0;
   font-weight: 500;
-  color: white;
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 
@@ -409,7 +409,7 @@ onMounted(() => {
 
 .rating-count {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
 }
 
 .user-rating-section {
@@ -426,7 +426,7 @@ onMounted(() => {
 
 .rating-text {
   font-weight: 600;
-  color: white;
+  color: var(--foreground);
 }
 
 .rating-input-section {
@@ -464,7 +464,7 @@ onMounted(() => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.4);
   border-radius: 0.25rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -483,7 +483,7 @@ onMounted(() => {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: white;
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 
@@ -493,7 +493,7 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
-  color: white;
+  color: var(--foreground);
   font-size: 0.9rem;
   font-family: inherit;
   resize: vertical;
@@ -501,7 +501,7 @@ onMounted(() => {
 }
 
 .comment-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--gray-500);
 }
 
 .comment-textarea:focus {
@@ -514,7 +514,7 @@ onMounted(() => {
   display: block;
   text-align: right;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
   margin-top: 0.25rem;
 }
 
@@ -523,7 +523,7 @@ onMounted(() => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -533,7 +533,7 @@ onMounted(() => {
   background: rgba(34, 197, 94, 0.2);
   border: 1px solid rgba(34, 197, 94, 0.5);
   border-radius: 0.5rem;
-  color: #bbf7d0;
+  color: var(--foreground);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -551,7 +551,7 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 0.5rem;
-  color: white;
+  color: var(--foreground);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -596,20 +596,20 @@ onMounted(() => {
 
 .no-visit-message h3 {
   margin: 0 0 1rem 0;
-  color: white;
+  color: var(--foreground);
   font-size: 1.5rem;
 }
 
 .no-visit-message p {
   margin: 0.5rem 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--foreground);
   font-size: 1rem;
 }
 
 .scan-instruction {
   margin-top: 1rem !important;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--gray-500) !important;
 }
 
 .scan-link-button {

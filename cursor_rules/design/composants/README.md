@@ -9,6 +9,7 @@ Ce dossier contient les guidelines pour chaque type de composant.
 - **navbar/** : Barre de navigation inférieure (BottomNav) avec cercle central
 - **navigation/** : Header, footer, menus, breadcrumbs
 - **scrollbar/** : Scrollbar personnalisée avec règles obligatoires
+- **links/** : Liens de navigation avec style de la charte graphique
 - **cards** : Cartes de contenu, cartes de deals
 - **buttons** : Boutons primaires, secondaires, actions
 - **modals** : Modales, dialogs, popups

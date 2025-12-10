@@ -1,7 +1,5 @@
 <template>
   <div class="ma-dalle-view">
-    <h2 class="page-title section-title">MA DALLE</h2>
-    
     <!-- Scanner QR Code -->
     <section class="scanner-section">
       <h3 class="section-title">SCANNER UN QR CODE</h3>
@@ -414,7 +412,7 @@ onUnmounted(() => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
   max-width: 500px;
@@ -426,7 +424,7 @@ onUnmounted(() => {
   background: rgba(34, 197, 94, 0.2);
   border: 1px solid rgba(34, 197, 94, 0.5);
   border-radius: 0.5rem;
-  color: #bbf7d0;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
   max-width: 500px;
@@ -480,7 +478,7 @@ onUnmounted(() => {
 
 .restaurant-address {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
 }
 
 .rating-section {
@@ -554,7 +552,7 @@ onUnmounted(() => {
 }
 
 .no-rating-text {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
   font-style: italic;
 }
 
@@ -598,7 +596,7 @@ onUnmounted(() => {
 
 .remaining-text {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
   margin: 0;
 }
 
@@ -609,7 +607,7 @@ onUnmounted(() => {
 
 .visit-date {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -618,7 +616,7 @@ onUnmounted(() => {
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
 }
 
 @media (max-width: 768px) {

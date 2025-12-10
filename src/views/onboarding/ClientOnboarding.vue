@@ -1,7 +1,6 @@
 <template>
   <div class="onboarding-view">
     <BackButton />
-    <h2 class="section-title">ONBOARDING ÉTUDIANT</h2>
     <p class="body-text">Formulaire d'inscription étudiant à venir...</p>
   </div>
 </template>

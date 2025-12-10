@@ -3,8 +3,6 @@
     <div class="login-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="login-card">
-        <h2 class="section-title">CONNEXION</h2>
-        
         <!-- Choix du type d'utilisateur avec tabs -->
         <div class="tabs-container">
           <div class="tabs">
@@ -180,7 +178,7 @@ const handleTestRestaurant = async () => {
   padding: 0.75rem 1rem;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   border-radius: 0.375rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -230,7 +228,7 @@ const handleTestRestaurant = async () => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
 }
@@ -280,7 +278,7 @@ const handleTestRestaurant = async () => {
 
 .divider span {
   padding: 0 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 
@@ -325,7 +323,7 @@ const handleTestRestaurant = async () => {
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
 }
 
 .signup-link a {

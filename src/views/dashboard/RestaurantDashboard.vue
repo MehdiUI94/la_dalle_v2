@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-view">
     <BackButton />
-    <h2 class="page-title section-title">DASHBOARD RESTAURANT</h2>
     <div class="dashboard-card">
       <p class="body-text">Gestion des deals à venir...</p>
     </div>

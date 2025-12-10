@@ -82,21 +82,21 @@ onMounted(() => {
 <style scoped>
 .qr-code-generator {
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: var(--background);
+  border: 3px solid var(--black);
+  box-shadow: 4px 4px 0 0 var(--black);
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .qr-code-generator h3 {
   margin: 0 0 0.5rem 0;
-  color: white;
+  color: var(--foreground);
   font-size: 1.25rem;
 }
 
 .qr-instruction {
   margin: 0 0 1.5rem 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 
@@ -162,7 +162,7 @@ onMounted(() => {
 }
 
 .loading-qr p {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
   font-size: 0.9rem;
 }
 </style>

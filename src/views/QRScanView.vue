@@ -2,8 +2,6 @@
   <div class="qr-scan-view">
     <BackButton />
     <div class="scan-container">
-      <h2 class="scan-title section-title">SCANNER LE QR CODE DU RESTAURANT</h2>
-      
       <div v-if="error" class="error-message body-text">
         {{ error }}
       </div>
@@ -304,7 +302,7 @@ onUnmounted(() => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
   max-width: 500px;
@@ -315,7 +313,7 @@ onUnmounted(() => {
   background: rgba(34, 197, 94, 0.2);
   border: 1px solid rgba(34, 197, 94, 0.5);
   border-radius: 0.5rem;
-  color: #bbf7d0;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
   max-width: 500px;
@@ -334,7 +332,7 @@ onUnmounted(() => {
 .scanned-restaurant-info h3 {
   margin: 0 0 1rem 0;
   font-size: 1.25rem;
-  color: #bbf7d0;
+  color: var(--foreground);
 }
 
 .scanned-restaurant-info p {
@@ -345,7 +343,7 @@ onUnmounted(() => {
 .success-note {
   margin-top: 1rem !important;
   font-size: 0.9rem !important;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   font-style: italic;
 }
 

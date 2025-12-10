@@ -107,7 +107,17 @@ Inter est la police principale du projet. Elle est utilisée pour tous les texte
 - Tous les textes lisibles par l'utilisateur doivent respecter cette taille minimale
 - Exception : les icônes et éléments décoratifs peuvent être plus petits
 
-### 5. Majuscules sur les Textes Utilisateur
+### 5. Couleur des Textes
+
+⚠️ **OBLIGATOIRE** : Tous les textes doivent être en noir par défaut
+
+- **Couleur par défaut** : `var(--foreground)` (#1A1A1A) ou `var(--black)` (#1A1A1A)
+- Tous les textes lisibles doivent utiliser cette couleur
+- Les textes sur fond blanc doivent être en noir
+- Exception : Les messages d'erreur peuvent utiliser `var(--primary)` pour attirer l'attention
+- Exception : Les textes de succès peuvent utiliser `var(--lime)` pour indiquer le succès
+
+### 6. Majuscules sur les Textes Utilisateur
 
 ⚠️ **OBLIGATOIRE** : Tous les textes affichés à l'utilisateur doivent commencer par une majuscule
 
@@ -242,4 +252,5 @@ font-size: 3rem; /* 48px */
 4. ✅ Line-height serré sur titres (1.1)
 5. ✅ Taille minimale : 14px (0.875rem)
 6. ✅ Tous les textes utilisateur commencent par une majuscule
-7. ✅ Mobile-first pour les tailles responsive
+7. ✅ **Tous les textes doivent être en noir par défaut** (`var(--foreground)` ou `var(--black)`)
+8. ✅ Mobile-first pour les tailles responsive

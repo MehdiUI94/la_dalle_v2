@@ -1,15 +1,14 @@
 <template>
-  <a @click.prevent="goBack" href="#" class="back-button" aria-label="Retour">
-    <span class="chevron">‹</span>
+  <router-link :to="backTo" class="back-link" aria-label="Retour">
+    <span class="chevron-icon">‹</span>
     <span class="back-text body-text">{{ backText }}</span>
-  </a>
+  </router-link>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
-const router = useRouter()
 const route = useRoute()
 
 const backText = computed(() => {
@@ -20,65 +19,59 @@ const backText = computed(() => {
   return 'Retour'
 })
 
-const goBack = () => {
+const backTo = computed(() => {
   // Si on vient de l'accueil, aller à l'accueil
   if (route.meta.fromHome === true) {
-    router.push('/')
-  } else {
-    // Sinon, utiliser l'historique du navigateur
-    if (window.history.length > 1) {
-      router.back()
-    } else {
-      // Si pas d'historique, aller à l'accueil par défaut
-      router.push('/')
-    }
+    return '/'
   }
-}
+  // Si une route précédente est spécifiée dans les meta, l'utiliser
+  if (route.meta.fromRoute && typeof route.meta.fromRoute === 'string') {
+    return route.meta.fromRoute
+  }
+  // Sinon, aller à l'accueil par défaut
+  return '/'
+})
 </script>
 
 <style scoped>
-.back-button {
+.back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(10px);
+  color: var(--foreground);
   text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+.back-link:hover {
+  color: var(--primary);
+}
+
+.back-text {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--gray-500);
+  text-underline-offset: 2px;
+}
+
+.chevron-icon {
+  font-size: 1.2rem;
+  color: var(--gray-500);
+  transition: transform 0.2s, color 0.2s;
+  margin-right: 0.25rem;
+}
+
+.back-link:hover .chevron-icon {
+  color: var(--primary);
   transform: translateX(-2px);
 }
 
-.back-button:active {
-  transform: translateX(0);
-  opacity: 0.8;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.chevron {
-  font-size: 1.5rem;
-  line-height: 1;
-  font-weight: 300;
-}
-
-
 @media (max-width: 640px) {
-  .back-button {
-    padding: 0.4rem 0.75rem;
-  }
-
-  .chevron {
-    font-size: 1.3rem;
+  .chevron-icon {
+    font-size: 1rem;
   }
 }
 </style>

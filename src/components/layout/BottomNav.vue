@@ -19,7 +19,7 @@
     </router-link>
     <router-link to="/profile" class="nav-item">
       <span class="icon">👤</span>
-      <span class="label">Profil</span>
+      <span class="label">Mon Profil</span>
     </router-link>
   </nav>
 </template>

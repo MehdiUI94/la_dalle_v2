@@ -93,6 +93,7 @@ const locationDisplayText = computed(() => {
   gap: 0.5rem;
   flex-shrink: 0;
   margin-left: auto;
+  padding-right: 4px;
 }
 
 .location-link {

@@ -198,22 +198,23 @@ watch(() => suggestions.value, (newSuggestions) => {
   width: 100%;
   padding: 0.75rem;
   padding-right: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0 0 var(--black);
+  background: var(--background);
   border-radius: 0.5rem;
-  color: white;
+  color: var(--foreground);
   font-size: 1rem;
   font-family: inherit;
 }
 
 .autocomplete-wrapper input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--gray-500);
 }
 
 .autocomplete-wrapper input:focus {
   outline: none;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--black);
 }
 
 .autocomplete-wrapper input.invalid-address {
@@ -266,7 +267,7 @@ watch(() => suggestions.value, (newSuggestions) => {
   flex-direction: column;
   gap: 0.25rem;
   transition: background 0.15s;
-  color: #333;
+  color: var(--foreground);
 }
 
 .suggestion-item:last-child {
@@ -280,16 +281,16 @@ watch(() => suggestions.value, (newSuggestions) => {
 
 .suggestion-label {
   font-weight: 500;
-  color: #333;
+  color: var(--foreground);
 }
 
 .suggestion-city {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--gray-500);
 }
 
 .error-message {
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }

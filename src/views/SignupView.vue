@@ -3,8 +3,6 @@
     <div class="signup-container">
       <img src="/logo_v2.png" alt="LA DALLE" class="logo-image" />
       <div class="signup-card">
-        <h2 class="section-title">INSCRIPTION</h2>
-        
         <!-- Choix du type d'utilisateur avec tabs -->
         <div class="tabs-container">
           <div class="tabs">
@@ -547,7 +545,7 @@ const handleSignup = async () => {
   padding: 0.75rem 1rem;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   border-radius: 0.375rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -578,7 +576,7 @@ const handleSignup = async () => {
   border-left: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 0.25rem;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--foreground);
 }
 
 .asterisk {
@@ -623,14 +621,14 @@ const handleSignup = async () => {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-500);
   font-style: italic;
 }
 
 .optional-label {
   font-style: italic;
   font-weight: normal;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   font-size: 0.9em;
   margin-left: 0.25rem;
 }
@@ -660,7 +658,7 @@ const handleSignup = async () => {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-radius: 0.5rem;
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.9rem;
   text-align: center;
 }
@@ -698,7 +696,7 @@ const handleSignup = async () => {
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
 }
 
 .login-link a {

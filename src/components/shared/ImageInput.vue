@@ -187,7 +187,7 @@ watch(() => props.modelValue, (newValue) => {
   padding: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -196,7 +196,7 @@ watch(() => props.modelValue, (newValue) => {
 
 .tab:hover {
   background: rgba(255, 255, 255, 0.15);
-  color: white;
+  color: var(--foreground);
 }
 
 .tab.active {
@@ -217,7 +217,7 @@ watch(() => props.modelValue, (newValue) => {
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
-  color: white;
+  color: var(--foreground);
   font-size: 1rem;
 }
 
@@ -252,7 +252,7 @@ watch(() => props.modelValue, (newValue) => {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
 }
 
 .upload-icon {
@@ -264,7 +264,7 @@ watch(() => props.modelValue, (newValue) => {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--foreground);
 }
 
 .spinner {
@@ -299,7 +299,7 @@ watch(() => props.modelValue, (newValue) => {
   height: 30px;
   border-radius: 50%;
   background: rgba(239, 68, 68, 0.9);
-  color: white;
+  color: var(--foreground);
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
@@ -309,7 +309,7 @@ watch(() => props.modelValue, (newValue) => {
 }
 
 .error-message {
-  color: #ffcccc;
+  color: var(--foreground);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
@@ -317,7 +317,7 @@ watch(() => props.modelValue, (newValue) => {
 .optional-label {
   font-style: italic;
   font-weight: normal;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
   font-size: 0.9em;
 }
 </style>

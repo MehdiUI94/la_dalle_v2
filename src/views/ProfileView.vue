@@ -1,7 +1,6 @@
 <template>
   <div class="profile-view">
     <BackButton />
-    <h2 class="page-title section-title">MON PROFIL</h2>
     
     <div v-if="user" class="profile-card">
       <div class="profile-header">
@@ -112,7 +111,7 @@ const handleLogout = async () => {
 }
 
 .user-email {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--gray-500);
   margin-bottom: 1rem;
 }
 
@@ -125,12 +124,12 @@ const handleLogout = async () => {
 
 .role-badge.etudiant {
   background: rgba(102, 126, 234, 0.3);
-  color: #a5b4fc;
+  color: var(--foreground);
 }
 
 .role-badge.restaurant {
   background: rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  color: var(--foreground);
 }
 
 .profile-stats {
@@ -151,7 +150,7 @@ const handleLogout = async () => {
 }
 
 .stat-label {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--gray-500);
 }
 
 .stat-value {
